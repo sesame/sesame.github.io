@@ -1,0 +1,9 @@
+/* ==============================================================================
+   AsciiDoc Preview Stylesheet for VS Code
+   Completely hides Hugo Front Matter in Preview to prevent clutter
+   ============================================================================== */
+
+/* Hide Hugo TOML/YAML Front Matter block completely in AsciiDoc preview */
+#content > .paragraph:first-of-type {
+  display: none !important;
+}

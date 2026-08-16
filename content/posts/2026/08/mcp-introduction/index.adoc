@@ -140,7 +140,7 @@ Antigravity では、`mcp_config.json` を配置するだけで簡単に MCP サ
 
 公式の `@modelcontextprotocol/sdk` を使用すると、わずか数十行のコードでオリジナルの MCP サーバーを作成できます。
 
-[source,typescript]
+[source,ts]
 ----
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
