@@ -50,10 +50,12 @@ table.linenotable code {
 }
 
 /* ==============================================================================
-   Tables (AsciiDoc .tableblock & General Tables)
+   Data Tables (AsciiDoc .tableblock & Markdown Content Tables)
    ============================================================================== */
 
-.content table:not(.linenotable):not(.admonitionblock table) {
+table.tableblock,
+.content article > table,
+.content .paragraph > table {
   width: 100% !important;
   margin: 2.5rem 0 !important;
   border-collapse: collapse !important;
@@ -62,83 +64,100 @@ table.linenotable code {
   overflow: hidden !important;
   font-size: 1.5rem !important;
   line-height: 1.6 !important;
-  background-color: #ffffff;
+  background-color: #ffffff !important;
 }
 
-.content table:not(.linenotable):not(.admonitionblock table) th,
-.content table:not(.linenotable):not(.admonitionblock table) td {
+table.tableblock th,
+table.tableblock td,
+.content article > table th,
+.content article > table td {
   padding: 1rem 1.4rem !important;
   border: 1px solid #d0d7de !important;
   vertical-align: middle !important;
 }
 
-.content table:not(.linenotable):not(.admonitionblock table) th {
+table.tableblock th,
+.content article > table th {
   background-color: #f6f8fa !important;
   color: #1f2328 !important;
   font-weight: 600 !important;
   text-align: left !important;
 }
 
-.content table:not(.linenotable):not(.admonitionblock table) td {
+table.tableblock td,
+.content article > table td {
   color: #24292f !important;
 }
 
-.content table:not(.linenotable):not(.admonitionblock table) tr:nth-child(even) {
-  background-color: #f8fafc;
+table.tableblock tr:nth-child(even),
+.content article > table tr:nth-child(even) {
+  background-color: #f8fafc !important;
 }
 
-.content table:not(.linenotable):not(.admonitionblock table) p,
-.content table:not(.linenotable):not(.admonitionblock table) p.tableblock {
+table.tableblock p,
+table.tableblock p.tableblock {
   margin: 0 !important;
   line-height: inherit !important;
 }
 
-/* Dark Mode Tables */
+/* Dark Mode Data Tables */
 @media (prefers-color-scheme: dark) {
-  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) {
+  body.colorscheme-auto table.tableblock,
+  body.colorscheme-auto .content article > table {
     border-color: #30363d !important;
     background-color: #0d1117 !important;
   }
 
-  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) th,
-  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) td {
+  body.colorscheme-auto table.tableblock th,
+  body.colorscheme-auto table.tableblock td,
+  body.colorscheme-auto .content article > table th,
+  body.colorscheme-auto .content article > table td {
     border-color: #30363d !important;
   }
 
-  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) th {
+  body.colorscheme-auto table.tableblock th,
+  body.colorscheme-auto .content article > table th {
     background-color: #161b22 !important;
     color: #e6edf3 !important;
   }
 
-  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) td {
+  body.colorscheme-auto table.tableblock td,
+  body.colorscheme-auto .content article > table td {
     color: #c9d1d9 !important;
   }
 
-  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) tr:nth-child(even) {
+  body.colorscheme-auto table.tableblock tr:nth-child(even),
+  body.colorscheme-auto .content article > table tr:nth-child(even) {
     background-color: #161b22 !important;
   }
 }
 
-body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) {
+body.colorscheme-dark table.tableblock,
+body.colorscheme-dark .content article > table {
   border-color: #30363d !important;
   background-color: #0d1117 !important;
 }
 
-body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) th,
-body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) td {
+body.colorscheme-dark table.tableblock th,
+body.colorscheme-dark table.tableblock td,
+body.colorscheme-dark .content article > table th,
+body.colorscheme-dark .content article > table td {
   border-color: #30363d !important;
 }
 
-body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) th {
+body.colorscheme-dark table.tableblock th,
+body.colorscheme-dark .content article > table th {
   background-color: #161b22 !important;
   color: #e6edf3 !important;
 }
 
-body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) td {
+body.colorscheme-dark table.tableblock td,
+body.colorscheme-dark .content article > table td {
   color: #c9d1d9 !important;
 }
 
-body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) tr:nth-child(even) {
+body.colorscheme-dark table.tableblock tr:nth-child(even),
+body.colorscheme-dark .content article > table tr:nth-child(even) {
   background-color: #161b22 !important;
 }
 
@@ -147,37 +166,48 @@ body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock tabl
    ============================================================================== */
 
 .admonitionblock {
-  margin: 2.5rem 0;
-  width: 100%;
+  margin: 2.5rem 0 !important;
+  width: 100% !important;
+  border-radius: 0.6rem !important;
+  overflow: hidden !important;
 }
 
 .admonitionblock table {
-  border-collapse: separate !important;
+  border-collapse: collapse !important;
   border-spacing: 0 !important;
   border: none !important;
   background: transparent !important;
   width: 100% !important;
   margin: 0 !important;
+  padding: 0 !important;
+}
+
+.admonitionblock table tbody,
+.admonitionblock table tr {
+  border: none !important;
+  background: transparent !important;
 }
 
 .admonitionblock table td {
   border: none !important;
   padding: 1.2rem 1.6rem !important;
   vertical-align: middle !important;
+  background: transparent !important;
 }
 
 .admonitionblock table td.icon {
-  text-align: center;
-  width: 4.5rem;
-  font-size: 2.4rem;
+  text-align: center !important;
+  width: 4.5rem !important;
+  min-width: 4.5rem !important;
+  font-size: 2.4rem !important;
   padding-right: 0 !important;
 }
 
 .admonitionblock table td.icon i.fa {
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  font-style: normal;
-  display: inline-block;
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+  font-style: normal !important;
+  display: inline-block !important;
 }
 
 .admonitionblock table td.icon i.icon-note::before {
@@ -206,8 +236,9 @@ body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock tabl
 }
 
 .admonitionblock table td.content {
-  font-size: 1.6rem;
-  line-height: 1.6;
+  font-size: 1.55rem !important;
+  line-height: 1.6 !important;
+  color: #24292f !important;
 }
 
 .admonitionblock table td.content > .title {
@@ -216,32 +247,74 @@ body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock tabl
 }
 
 .admonitionblock table td.content p:last-child {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
-.admonitionblock.note table {
+/* Admonition Box Themes (Light) */
+.admonitionblock.note {
   border-left: 4px solid #0284c7 !important;
   background-color: rgba(2, 132, 199, 0.08) !important;
 }
 
-.admonitionblock.tip table {
+.admonitionblock.tip {
   border-left: 4px solid #eab308 !important;
   background-color: rgba(234, 179, 8, 0.08) !important;
 }
 
-.admonitionblock.warning table {
+.admonitionblock.warning {
   border-left: 4px solid #f97316 !important;
   background-color: rgba(249, 115, 22, 0.08) !important;
 }
 
-.admonitionblock.caution table {
+.admonitionblock.caution {
   border-left: 4px solid #ef4444 !important;
   background-color: rgba(239, 68, 68, 0.08) !important;
 }
 
-.admonitionblock.important table {
+.admonitionblock.important {
   border-left: 4px solid #dc2626 !important;
   background-color: rgba(220, 38, 38, 0.08) !important;
+}
+
+/* Admonition Box Themes (Dark) */
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto .admonitionblock table td.content {
+    color: #e6edf3 !important;
+  }
+  body.colorscheme-auto .admonitionblock.note {
+    background-color: rgba(2, 132, 199, 0.15) !important;
+  }
+  body.colorscheme-auto .admonitionblock.tip {
+    background-color: rgba(234, 179, 8, 0.15) !important;
+  }
+  body.colorscheme-auto .admonitionblock.warning {
+    background-color: rgba(249, 115, 22, 0.15) !important;
+  }
+  body.colorscheme-auto .admonitionblock.caution {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+  }
+  body.colorscheme-auto .admonitionblock.important {
+    background-color: rgba(220, 38, 38, 0.15) !important;
+  }
+}
+
+body.colorscheme-dark .admonitionblock table td.content {
+  color: #e6edf3 !important;
+}
+body.colorscheme-dark .admonitionblock.note {
+  background-color: rgba(2, 132, 199, 0.15) !important;
+}
+body.colorscheme-dark .admonitionblock.tip {
+  background-color: rgba(234, 179, 8, 0.15) !important;
+}
+body.colorscheme-dark .admonitionblock.warning {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+}
+body.colorscheme-dark .admonitionblock.caution {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+body.colorscheme-dark .admonitionblock.important {
+  background-color: rgba(220, 38, 38, 0.15) !important;
 }
 
 /* Brand Icons fallback for Font Awesome 6 */
@@ -335,6 +408,7 @@ span.icon > i.fa {
   border: none !important;
   padding: 0 !important;
   vertical-align: top !important;
+  background: transparent !important;
 }
 
 .code-block-wrapper table.linenotable td.linenos {
