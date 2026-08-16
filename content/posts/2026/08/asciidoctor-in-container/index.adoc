@@ -1,0 +1,186 @@
++++
+date = '2026-08-16T11:28:00Z'
+draft = false
+title = '【Hugo × AsciiDoc】Asciidoctor をコンテナ化して透過的に動かすスマートな開発環境構成'
+description = 'Hugo で AsciiDoc を使う際、ホストやメイン開発環境に Ruby を入れずに済む「Asciidoctor コンテナ化 + CLI ラッパー」アーキテクチャの設計・実装手順・メリットを徹底解説します。'
+tags = ["hugo", "asciidoc", "asciidoctor", "docker", "devcontainers", "ruby"]
+categories = ["Tech", "Architecture"]
++++
+
+== はじめに
+
+静的サイトジェネレーター **Hugo** は、Markdown だけでなく **AsciiDoc (`.adoc`)** による記事執筆を標準サポートしています。AsciiDoc は、テーブル表現、Admonition（警告・注記ブロック）、ダイアグラム連携、柔軟なインクルード機能など、技術文書やブログの執筆において非常に強力なフォーマットです。
+
+しかし、Hugo が AsciiDoc を HTML に変換する際には、外部コマンドである **`asciidoctor`（Ruby 製）** を内部的に呼び出す必要があります。
+
+ここでエンジニアが直面するのが、**「環境構築のコンフリクト・肥大化問題」** です：
+
+* Go 製の Hugo 開発環境に、Ruby、Bundler、各種 Gem（Rouge, asciidoctor-diagram など）を同居させたくない
+* Ruby のバージョンや Gem の依存関係がホスト PC やメインコンテナを汚してしまう
+* チームメンバー全員に Ruby 環境のセットアップを強制したくない
+
+この問題をエレガントに解決するのが、**「Asciidoctor を専用コンテナに切り出し、CLI ラッパースクリプトで透過的に呼び出す」** アプローチです。
+
+[TIP]
+====
+この仕組みを使うと、Hugo から見れば「ローカルに `asciidoctor` コマンドが存在している」ように振る舞いながら、実際の変換処理は完全に独立した Docker コンテナ内で実行されます。
+====
+
+'''
+
+== アーキテクチャの全体像
+
+Hugo と Asciidoctor コンテナ、ラッパースクリプトの連携フローは以下のようになります。
+
+[source,text]
+----
++-------------------------------------------------------------------------+
+| メイン開発環境 (DevContainer / ホスト環境)                               |
+|                                                                         |
+|  [ Hugo ]                                                               |
+|     | (1) AsciiDoc 変換時に `asciidoctor` を呼び出し                    |
+|     v                                                                   |
+|  [ ラッパースクリプト (~/.local/bin/asciidoctor) ]                      |
+|     |                                                                   |
+|     | (2) 標準入出力を受け渡しつつ `docker run` を実行                  |
+|     |     `exec docker run --rm -i adoc_converter:latest ...`          |
+|     v                                                                   |
++-----|-------------------------------------------------------------------+
+      | (3) stdin / stdout パイプ通信
+      v
++-------------------------------------------------------------------------+
+| Asciidoctor 専用コンテナ (adoc_converter:latest)                         |
+|                                                                         |
+|  - Ruby ランタイム                                                      |
+|  - asciidoctor / rouge (シンタックスハイライト) / 各種 Gems              |
+|                                                                         |
+|  (4) AsciiDoc を HTML にパースして stdout に出力                         |
++-------------------------------------------------------------------------+
+----
+
+Hugo は標準入力（stdin）から AsciiDoc テキストを渡し、標準出力（stdout）から変換された HTML を受け取ります。ラッパースクリプトはこの入出力をコンテナへとパイプするだけなので、オーバーヘッドも極めて小さく済みます。
+
+'''
+
+== 実装ステップ
+
+それでは、実際にこの環境を構築する手順を解説します。
+
+=== ステップ 1: Asciidoctor 専用 Docker イメージの作成
+
+まずは、Asciidoctor とシンタックスハイライター（Rouge 等）を含む軽量な Docker イメージを作成します。
+
+`Dockerfile.asciidoctor`:
+[source,dockerfile]
+----
+FROM ruby:3.4-slim-bookworm
+
+# 必要なビルドツールと Gem をインストール
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /converter
+
+# Gemfile を配置して bundle install
+COPY Gemfile* ./
+RUN bundle install
+
+ENTRYPOINT ["bundle", "exec", "asciidoctor"]
+----
+
+`Gemfile`:
+[source,ruby]
+----
+source 'https://rubygems.org'
+
+gem 'asciidoctor', '~> 2.0'
+gem 'rouge', '~> 4.0' # 高速・高機能なコードハイライター
+gem 'asciidoctor-diagram', '~> 2.2' # PlantUML や Mermaid を使う場合
+----
+
+イメージをビルドします：
+[source,bash]
+----
+docker build -t adoc_converter:latest -f Dockerfile.asciidoctor .
+----
+
+=== ステップ 2: 透過的 CLI ラッパースクリプトの配置
+
+Hugo から直接呼び出せるよう、パスの通った場所（例: `~/.local/bin/asciidoctor`）に以下のシェルスクリプトを作成します。
+
+`~/.local/bin/asciidoctor`:
+[source,bash]
+----
+#!/usr/bin/env bash
+# 標準入力・引数をすべてそのまま Asciidoctor コンテナへ中継
+exec docker run --rm -i --entrypoint bundle adoc_converter:latest exec asciidoctor "$@"
+----
+
+実行権限を付与します：
+[source,bash]
+----
+chmod +x ~/.local/bin/asciidoctor
+----
+
+[IMPORTANT]
+====
+`docker run` に **`-i`（interactive）** オプションを付けることが必須です。これがないと Hugo からパイプされた標準入力をコンテナが受け取れません。
+====
+
+=== ステップ 3: Hugo の設定 (`hugo.toml`)
+
+Hugo が外部コマンドとして `asciidoctor` を実行できるように、セキュリティポリシーと AsciiDoc レンダラーを設定します。
+
+`hugo.toml`:
+[source,toml]
+----
+[security.exec]
+  # Hugo が実行を許可する外部コマンド一覧に asciidoctor を追加
+  allow = ['^asciidoctor$', '^go$', '^git$']
+
+[markup.asciidocExt]
+  backend = 'html5'
+  preserveTOC = false
+  [markup.asciidocExt.attributes]
+    # Rouge によるシンタックスハイライトを有効化
+    source-highlighter = 'rouge'
+    source-linenums-option = ''
+    # FontAwesome アイコン（TIP, NOTE 等）を有効化
+    icons = 'font'
+----
+
+=== ステップ 4: 動作確認
+
+これで準備は完了です。Hugo のビルドを実行してみましょう。
+
+[source,bash]
+----
+hugo server -D
+----
+
+Hugo が記事の `.adoc` ファイルを検知すると、自動的にラッパースクリプト経由でコンテナ内の Asciidoctor が起動し、一瞬で HTML へとコンパイルされます。
+
+'''
+
+== この構成を採用する 4 つのメリット
+
+=== 1. メイン環境のクリーンさを保てる
+Go、Node.js、Python などで構築されたメイン環境に Ruby の環境変数を汚染させることなく、不要になったら `docker rmi adoc_converter:latest` だけで綺麗さっぱり削除できます。
+
+=== 2. Gem のバージョン差異によるレンダリング崩れを撲滅
+Docker イメージとして Gem のバージョン（Asciidoctor 2.0系, Rouge 4.0系など）が完全に固定されるため、「ローカルと CI/CD（GitHub Actions）で HTML の出力タグが微妙に異なる」といったトラブルが原理的に起きません。
+
+=== 3. DevContainer との親和性が抜群
+DevContainer 環境で開発している場合、`ghcr.io/devcontainers/features/docker-outside-of-docker`（DooD）を有効にしておけば、DevContainer の中からさらにこの変換コンテナを透過的に呼び出すことができます（当ブログもこの構成で稼働しています）。
+
+=== 4. プラグインやツールの拡張が容易
+将来的に `asciidoctor-kroki` や `asciidoctor-pdf` などの重厚な拡張を追加したくなった場合も、`Dockerfile.asciidoctor` 側を更新するだけで、Hugo 側の設定は一切変更する必要がありません。
+
+'''
+
+== まとめ
+
+「ある特定の処理のためだけに重いランタイムをホスト環境に入れたくない」という場面において、**「Docker コンテナ化 + CLI ラッパーによる透過的呼び出し」** は非常に強力なデザインパターンです。
+
+Hugo × AsciiDoc に限らず、Linter やフォーマッター、コード生成ツールなど様々な CLI 連携に応用できます。開発環境をシンプル＆堅牢に保ちたい方は、ぜひ導入してみてください！
