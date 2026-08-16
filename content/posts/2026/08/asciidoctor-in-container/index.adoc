@@ -184,3 +184,11 @@ DevContainer 環境で開発している場合、`ghcr.io/devcontainers/features
 「ある特定の処理のためだけに重いランタイムをホスト環境に入れたくない」という場面において、**「Docker コンテナ化 + CLI ラッパーによる透過的呼び出し」** は非常に強力なデザインパターンです。
 
 Hugo × AsciiDoc に限らず、Linter やフォーマッター、コード生成ツールなど様々な CLI 連携に応用できます。開発環境をシンプル＆堅牢に保ちたい方は、ぜひ導入してみてください！
+
+'''
+
+== 関連記事
+
+* link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]
+* link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
+* link:/posts/2026/08/agent-skills-introduction/[【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み]

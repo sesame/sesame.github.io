@@ -271,3 +271,11 @@ Agent Plugins を活用することで、以下のような恩恵が得られま
 * **クリーンなコンテキスト**: 必要なプラグインだけを有効化し、AI エージェントの性能を最大限に引き出せる
 
 AI エージェントを単なるチャットツールとしてではなく、「チーム専用の自律型エンジニア」として育てていくために、ぜひ Agent Plugins を活用してみてください！
+
+'''
+
+== 関連記事
+
+* link:/posts/2026/08/agent-skills-introduction/[【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み]
+* link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]
+* link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]

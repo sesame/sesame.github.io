@@ -223,3 +223,11 @@ Dev Containers を導入することで得られる最大の価値は、**「開
 * 新しい言語やフレームワークも気軽に試して、不要になったらコンテナごとワンタッチで破棄できる
 
 まだ試したことがない方は、ぜひ小さなプロジェクトから `.devcontainer/` を作成してみてください！
+
+'''
+
+== 関連記事
+
+* link:/posts/2026/08/asciidoctor-in-container/[【Hugo × AsciiDoc】Asciidoctor をコンテナ化して透過的に動かすスマートな開発環境構成]
+* link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
+* link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]

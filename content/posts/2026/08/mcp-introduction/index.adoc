@@ -199,6 +199,20 @@ MCP サーバーのツール名や説明文（description）は、AI モデル�
 
 '''
 
+== 運用時のセキュリティとデバッグ Tips
+
+=== 1. API トークンや認証情報の安全な管理
+* トークンを `mcp_config.json` に平文でコミットしないよう、環境変数（例: `process.env.GITHUB_PERSONAL_ACCESS_TOKEN` や `${localEnv:TOKEN}`）経由で渡すように構成します。
+* 読み取り専用で十分な場合は、DB や API の接続ユーザーを「ReadOnly 権限」に絞ることで、AI による意図しない更新・削除事故を未然に防止できます。
+
+=== 2. 登録されている MCP サーバーの動作確認
+Antigravity や CLI では、以下の方法で接続状態や公開されているツール一覧を確認できます：
+
+* **CLI での確認**: `agy mcp list` またはログファイルから接続ステータスを確認
+* **UI での確認**: エージェント画面のメニュー（`...`） > **MCP Servers** から有効なツール一覧とスキーマを一覧表示
+
+'''
+
 == まとめ：MCP がもたらす未来
 
 Model Context Protocol（MCP）の登場により、AI エージェントのエコシステムは以下のように進化しています：
@@ -208,3 +222,11 @@ Model Context Protocol（MCP）の登場により、AI エージェントのエ�
 * **社内データアクセスの標準化**: データベースや社内 API を MCP 化することで、セキュアに AI から活用できる
 
 AI エージェントの能力を最大限に拡張するために、ぜひ MCP の導入や自作サーバーの開発に挑戦してみてください！
+
+'''
+
+== 関連記事
+
+* link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
+* link:/posts/2026/08/agent-skills-introduction/[【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み]
+* link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]
