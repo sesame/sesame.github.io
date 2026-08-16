@@ -1,0 +1,225 @@
++++
+date = '2026-08-16T11:25:00Z'
+draft = false
+title = '【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する'
+description = '「私の環境では動くのに」をゼロにする Dev Containers（Development Containers）の仕組みとメリット、devcontainer.json の書き方、Hugo + AsciiDoc + AIエージェント環境を題材にした実践的な構成例を徹底解説します。'
+tags = ["docker", "devcontainers", "vscode", "hugo", "environment"]
+categories = ["Tech", "DevOps"]
++++
+
+== はじめに
+
+新規プロジェクトに参加したとき、以下のような経験をしたことはないでしょうか？
+
+* セットアップ手順書（README）の通りに進めたのに、OS やランタイムのバージョン差異でエラーになる
+* 「私のローカル PC では動くのに、他のメンバーの環境では動かない」
+* プロジェクトごとに異なるツールやライブラリをインストールしすぎて、ローカル環境が散らかってしまう
+
+こうした環境依存のトラブルを根本から解決するのが、**Dev Containers（Development Containers）** です。
+
+[TIP]
+====
+Dev Containers を使うと、エディタの設定、ランタイム、ツールチェーン、環境変数に至るまで、**開発環境のすべてをコード（Git リポジトリ）として定義・共有** できます。
+新しいメンバーはリポジトリをクローンして開くだけで、数分で完全に動作する開発環境が立ち上がります。
+====
+
+'''
+
+== Dev Containers の基本と仕組み
+
+Dev Containers は、Docker コンテナを「フル機能の開発環境」として利用するためのオープン仕様（Containers.dev）です。VS Code、Cursor、GitHub Codespaces など主要な開発環境で標準サポートされています。
+
+[source,text]
+----
++-------------------------------------------------------------+
+| ホスト PC (macOS / Windows / Linux)                         |
+|                                                             |
+|  +-------------------------------------------------------+  |
+|  | VS Code / IDE UI (キーバインド, テーマなど)             |  |
+|  +---------------------------+---------------------------+  |
+|                              | SSH / IPC 接続               |
+|                              v                              |
+|  +-------------------------------------------------------+  |
+|  | Dev Container (Docker コンテナ)                        |  |
+|  |                                                       |  |
+|  |  - 言語ランタイム (Go, Node.js, Python など)           |  |
+|  |  - CLI ツール (Hugo, Git, AWS CLI, Antigravity)        |  |
+|  |  - VS Code 拡張機能 (Go, AsciiDoc, Prettier など)     |  |
+|  |  - プロジェクトのソースコード (/workspaces/...)        |  |
+|  +-------------------------------------------------------+  |
++-------------------------------------------------------------+
+----
+
+=== 3 つの大きなメリット
+
+1. **環境の完全なコード化（IaC）**
+   開発環境の仕様が `.devcontainer/` フォルダ配下のファイルとしてバージョン管理されます。手順書の陳腐化が起きません。
+2. **ホスト OS のクリーン維持**
+   ツールやライブラリはすべてコンテナ内にインストールされるため、ホスト PC を汚しません。プロジェクトごとに異なる Go や Node.js のバージョンも競合なく同居できます。
+3. **オンボーディングコストの削減**
+   「VS Code でフォルダを開き、`Reopen in Container` をクリックするだけ」で誰でも即座にコーディング・ビルド・テストが可能です。
+
+'''
+
+== 主要な構成ファイル (`.devcontainer/`)
+
+Dev Container は、プロジェクトルートの `.devcontainer/` ディレクトリ内に設定ファイルを配置して定義します。
+
+[source,text]
+----
+.devcontainer/
+├── devcontainer.json   # 【必須】Dev Container の中心設定ファイル
+├── Dockerfile          # 【任意】ベースイメージや OS パッケージのカスタマイズ
+└── post-create.sh      # 【任意】コンテナ生成後に実行する初期化スクリプト
+----
+
+=== 1. `devcontainer.json` の基本構成
+
+`devcontainer.json` では、ビルド設定、マウント、環境変数、インストールする拡張機能などを宣言します。
+
+[source,json]
+----
+{
+  "name": "My Project DevContainer",
+  "build": {
+    "dockerfile": "./Dockerfile"
+  },
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "asciidoctor.asciidoctor-vscode",
+        "golang.go"
+      ]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}
+----
+
+'''
+
+== 実践例：Hugo + AsciiDoc + AIエージェント開発環境
+
+当ブログの実際の Dev Container 構成を例に、高度なカスタマイズパターンを紹介します。
+
+この環境では、以下の要件を満たすように構成されています：
+
+* **Go & Hugo Extended**: 高速静的サイト生成
+* **AsciiDoc (Asciidoctor)**: コンテナ連携（Docker-outside-of-Docker）によるドキュメント変換
+* **AI エージェント（Antigravity）**: CLI インストールとデータボリュームの永続化
+* **ホスト環境変数の透過**: GitHub トークン等の安全な引き渡し
+
+=== 1. `Dockerfile` の定義
+
+ベースイメージに Go 公式 DevContainer イメージを採用し、必要な共通パッケージをインストールします。
+
+[source,dockerfile]
+----
+FROM mcr.microsoft.com/devcontainers/go:2-1.26-bookworm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    unzip \
+    git \
+    lv \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/home/vscode/go/bin:/go/bin:/home/vscode/.local/bin:${PATH}"
+
+USER vscode
+----
+
+=== 2. `devcontainer.json` での機能拡張と永続化
+
+[source,json]
+----
+{
+  "name": "Hugo & AI Agent DevContainer",
+  "build": {
+    "context": ".",
+    "dockerfile": "./Dockerfile"
+  },
+  // ホスト上の名前付きボリュームをマウント（AIエージェントのキャッシュ・データを永続化）
+  "mounts": [
+    "source=agy-data,target=/home/vscode/.gemini/antigravity-cli,type=volume"
+  ],
+  // ホスト PC の環境変数をコンテナ内へ注入
+  "remoteEnv": {
+    "GITHUB_TOKEN_BLOG": "${localEnv:GITHUB_TOKEN_BLOG}"
+  },
+  // Docker コンテナ内からホストの Docker デーモンを操作できるようにする Feature
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  // コンテナ作成直後に実行する自動セットアップスクリプト
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "remoteUser": "vscode"
+}
+----
+
+=== 3. `post-create.sh` による自動初期化
+
+コンテナが立ち上がった直後に、Hugo Extended の最新ビルドや便利コマンドのインストールを自動実行します。
+
+[source,bash]
+----
+#!/bin/bash
+set -e
+
+echo "=== 🐹 Hugo Extended のインストール ==="
+if ! command -v hugo >/dev/null 2>&1; then
+  CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@latest
+fi
+
+echo "=== 📝 new-post コマンドの作成 ==="
+mkdir -p /home/vscode/.local/bin
+cat << 'EOF' > /home/vscode/.local/bin/new-post
+#!/usr/bin/env bash
+SLUG="$1"
+EXT="${2:-adoc}"
+YEAR=$(date +%Y)
+MONTH=$(date +%m)
+hugo new "posts/${YEAR}/${MONTH}/${SLUG}/index.${EXT}"
+EOF
+chmod +x /home/vscode/.local/bin/new-post
+----
+
+'''
+
+== 快適に運用するための 4 つのベストプラクティス
+
+=== 1. Dev Container Features を活用する
+Node.js、Python、Docker、AWS CLI などの追加ツールは、`Dockerfile` に自前で書くよりも公式の **Dev Container Features**（`features` フィールド）を指定する方がメンテナンス性が大幅に向上します。
+
+=== 2. 名前付きボリューム（Named Volumes）でデータを永続化する
+コンテナを破棄・再ビルドしても、キャッシュやツールの認証セッションを維持したい場合は、`mounts` で名前付きボリュームを割り当てます。
+
+[source,json]
+----
+"mounts": [
+  "source=project-cache,target=/home/vscode/.cache,type=volume"
+]
+----
+
+=== 3. 非 root ユーザー（`remoteUser: "vscode"`）で動作させる
+コンテナ内で作成したファイルがホスト側で `root` 所有権になってしまい編集できなくなる問題を避けるため、常に `vscode` などの一般ユーザーで作業する設定にします。
+
+=== 4. 機密情報は `${localEnv:...}` で渡す
+API キーや GitHub トークンをリポジトリ内のコードに直書きせず、`"remoteEnv": { "KEY": "${localEnv:KEY}" }` の形式でホストマシンの環境変数から注入します。
+
+'''
+
+== まとめ
+
+Dev Containers を導入することで得られる最大の価値は、**「開発環境の構築・トラブルシュートという不毛な時間からの解放」** です。
+
+* チームメンバー全員がまったく同じツールチェーンで作業できる
+* CI/CD や本番環境に近い条件でローカル開発ができる
+* 新しい言語やフレームワークも気軽に試して、不要になったらコンテナごとワンタッチで破棄できる
+
+まだ試したことがない方は、ぜひ小さなプロジェクトから `.devcontainer/` を作成してみてください！
