@@ -1,7 +1,7 @@
 +++
 date = '2026-08-16T11:32:00Z'
 draft = false
-title = '【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み'
+title = 'Agent Skills 入門：AIエージェントに業務手順・Runbookを教える仕組み'
 description = 'Google Antigravity などの AI コーディングエージェントにプロジェクト固有の運用手順やワークフローを教える「Agent Skills」の仕組み、Progressive Disclosure（段階的開示）による省トークン設計、作成手順とベストプラクティスを解説します。'
 tags = ["antigravity", "agent", "skills", "ai", "runbook"]
 categories = ["Tech", "AI Development"]
@@ -73,11 +73,11 @@ Skills が優れている最大の理由は、**Progressive Disclosure（段階�
 [source,text]
 ----
 .agents/skills/my-specialized-skill/
-├── SKILL.md          # 【必須】メイン指示書（YAML フロントマター付き）
-├── scripts/          # 【任意】エージェントが実行できる補助スクリプト
-├── examples/         # 【任意】期待するコード例・実装サンプル
-├── resources/        # 【任意】テンプレートやアセットファイル
-└── references/       # 【任意】詳細な仕様書やマニュアル
+├── SKILL.md          # 必須: メイン指示書（YAML フロントマター付き）
+├── scripts/          # 任意: エージェントが実行できる補助スクリプト
+├── examples/         # 任意: 期待するコード例・実装サンプル
+├── resources/        # 任意: テンプレートやアセットファイル
+└── references/       # 任意: 詳細な仕様書やマニュアル
 ----
 
 === 1. `SKILL.md` の基本フォーマット
@@ -207,7 +207,7 @@ Agent Skills は、AI エージェントを「ただの一般的なチャット 
 
 == 関連記事
 
-* link:/posts/2026/08/ai-coding-rules-comparison/[【徹底比較】GitHub Copilot・Cursor・Antigravity のルール設定（copilot-instructions.md / .cursorrules / GEMINI.md）]
+* link:/posts/2026/08/ai-coding-rules-comparison/[GitHub Copilot・Cursor・Antigravity のルール設定比較（copilot-instructions.md / .cursorrules / GEMINI.md）]
 * link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
-* link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]
-* link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]
+* link:/posts/2026/08/mcp-introduction/[Model Context Protocol（MCP）入門：AIエージェントと外部ツールをつなぐ標準仕様]
+* link:/posts/2026/08/devcontainers-introduction/[Dev Containers 入門：開発環境をコード化してチーム全員で共有する]

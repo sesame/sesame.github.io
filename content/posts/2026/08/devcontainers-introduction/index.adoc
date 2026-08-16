@@ -1,8 +1,8 @@
 +++
 date = '2026-08-16T11:25:00Z'
 draft = false
-title = '【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する'
-description = '「私の環境では動くのに」をゼロにする Dev Containers（Development Containers）の仕組みとメリット、devcontainer.json の書き方、Hugo + AsciiDoc + AIエージェント環境を題材にした実践的な構成例を徹底解説します。'
+title = 'Dev Containers 入門：開発環境をコード化してチーム全員で共有する'
+description = '「環境の違いで動かない」問題を解消する Dev Containers（Development Containers）の仕組みとメリット、devcontainer.json の書き方、Hugo + AsciiDoc + AIエージェント環境を題材にした実践的な構成例を解説します。'
 tags = ["docker", "devcontainers", "vscode", "hugo", "environment"]
 categories = ["Tech", "DevOps"]
 +++
@@ -68,9 +68,9 @@ Dev Container は、プロジェクトルートの `.devcontainer/` ディレク
 [source,text]
 ----
 .devcontainer/
-├── devcontainer.json   # 【必須】Dev Container の中心設定ファイル
-├── Dockerfile          # 【任意】ベースイメージや OS パッケージのカスタマイズ
-└── post-create.sh      # 【任意】コンテナ生成後に実行する初期化スクリプト
+├── devcontainer.json   # 必須: Dev Container の中心設定ファイル
+├── Dockerfile          # 任意: ベースイメージや OS パッケージのカスタマイズ
+└── post-create.sh      # 任意: コンテナ生成後に実行する初期化スクリプト
 ----
 
 === 1. `devcontainer.json` の基本構成
@@ -228,6 +228,7 @@ Dev Containers を導入することで得られる最大の価値は、**「開
 
 == 関連記事
 
-* link:/posts/2026/08/asciidoctor-in-container/[【Hugo × AsciiDoc】Asciidoctor をコンテナ化して透過的に動かすスマートな開発環境構成]
+* link:/posts/2026/08/asciidoctor-in-container/[Hugo と Asciidoctor をコンテナ連携で動かす開発環境構成]
+* link:/posts/2026/08/ai-coding-rules-comparison/[GitHub Copilot・Cursor・Antigravity のルール設定比較（copilot-instructions.md / .cursorrules / GEMINI.md）]
 * link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
-* link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]
+* link:/posts/2026/08/mcp-introduction/[Model Context Protocol（MCP）入門：AIエージェントと外部ツールをつなぐ標準仕様]

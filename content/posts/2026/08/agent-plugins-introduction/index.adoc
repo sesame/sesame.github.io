@@ -57,12 +57,12 @@ Agent Plugins は、Antigravity の各種カスタマイズ要素を 1 つのデ
 [source,text]
 ----
 plugins/my-team-plugin/
-├── plugin.json       # 【必須】マニフェストファイル
-├── mcp_config.json   # 【任意】プラグインが提供する MCP サーバー設定
-├── hooks.json        # 【任意】ライフサイクルフック設定
-├── rules/            # 【任意】プラグイン固有のルール（AGENTS.md 推奨）
+├── plugin.json       # 必須: マニフェストファイル
+├── mcp_config.json   # 任意: プラグインが提供する MCP サーバー設定
+├── hooks.json        # 任意: ライフサイクルフック設定
+├── rules/            # 任意: プラグイン固有のルール（AGENTS.md 推奨）
 │   └── AGENTS.md
-└── skills/           # 【任意】プラグインが提供するスキル群
+└── skills/           # 任意: プラグインが提供するスキル群
     └── deploy-helper/
         └── SKILL.md
 ----
@@ -276,7 +276,7 @@ AI エージェントを単なるチャットツールとしてではなく、�
 
 == 関連記事
 
-* link:/posts/2026/08/ai-coding-rules-comparison/[【徹底比較】GitHub Copilot・Cursor・Antigravity のルール設定（copilot-instructions.md / .cursorrules / GEMINI.md）]
-* link:/posts/2026/08/agent-skills-introduction/[【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み]
-* link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]
-* link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]
+* link:/posts/2026/08/ai-coding-rules-comparison/[GitHub Copilot・Cursor・Antigravity のルール設定比較（copilot-instructions.md / .cursorrules / GEMINI.md）]
+* link:/posts/2026/08/agent-skills-introduction/[Agent Skills 入門：AIエージェントに業務手順・Runbookを教える仕組み]
+* link:/posts/2026/08/mcp-introduction/[Model Context Protocol（MCP）入門：AIエージェントと外部ツールをつなぐ標準仕様]
+* link:/posts/2026/08/devcontainers-introduction/[Dev Containers 入門：開発環境をコード化してチーム全員で共有する]

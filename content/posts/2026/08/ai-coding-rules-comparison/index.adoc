@@ -1,8 +1,8 @@
 +++
 date = '2026-08-16T11:35:00Z'
 draft = false
-title = '【徹底比較】GitHub Copilot・Cursor・Antigravity のルール設定（copilot-instructions.md / .cursorrules / GEMINI.md）'
-description = '主要な AI コーディングツールのカスタム指示ファイル（GitHub Copilot の copilot-instructions.md、Cursor の .cursorrules、Antigravity の GEMINI.md / AGENTS.md）の仕組み、仕様の比較、効果的な書き方を徹底解説します。'
+title = 'GitHub Copilot・Cursor・Antigravity のルール設定比較（copilot-instructions.md / .cursorrules / GEMINI.md）'
+description = '主要な AI コーディングツールのカスタム指示ファイル（GitHub Copilot の copilot-instructions.md、Cursor の .cursorrules、Antigravity の GEMINI.md / AGENTS.md）の仕組み、仕様の比較、効果的な書き方を解説します。'
 tags = ["copilot", "github", "cursor", "antigravity", "ai", "rules"]
 categories = ["Tech", "AI Development"]
 +++
@@ -120,7 +120,7 @@ my-repository/
 └── .agents/
     ├── rules/              # 専用ルールディレクトリ
     │   └── security.md
-    └── skills/             # 【別枠】オンデマンド手順書（Runbook）
+    └── skills/             # オンデマンド手順書（Runbook）ディレクトリ
 ----
 
 === 記述例 (`AGENTS.md`)
@@ -174,7 +174,7 @@ my-project/
 
 == 関連記事
 
-* link:/posts/2026/08/agent-skills-introduction/[【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み]
+* link:/posts/2026/08/agent-skills-introduction/[Agent Skills 入門：AIエージェントに業務手順・Runbookを教える仕組み]
 * link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
-* link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]
-* link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]
+* link:/posts/2026/08/mcp-introduction/[Model Context Protocol（MCP）入門：AIエージェントと外部ツールをつなぐ標準仕様]
+* link:/posts/2026/08/devcontainers-introduction/[Dev Containers 入門：開発環境をコード化してチーム全員で共有する]
