@@ -1,0 +1,12 @@
++++
+date = '{{ .Date }}'
+draft = true
+title = '{{ replace (path.Base (path.Dir .File.Path)) "-" " " | title }}'
+description = ''
+tags = []
+categories = []
++++
+
+== はじめに
+
+ここから本文を記述します。
