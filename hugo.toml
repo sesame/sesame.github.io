@@ -1,4 +1,5 @@
 baseURL = 'https://sesame.purplemoon.org/'
+defaultContentLanguage = 'ja'
 locale = 'ja-jp'
 title = 'Sesame blog'
 theme = 'hugo-coder'
