@@ -1,0 +1,25 @@
+baseURL = 'https://sesame.purplemoon.org/'
+locale = 'ja-jp'
+title = 'Sesame blog'
+theme = 'hugo-coder'
+
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
+
+[params]
+  author = "sesame"
+  info = "Software Engineer / Developer"
+  description = "Sesame Blog"
+  keywords = "blog,developer,personal"
+  dateFormat = "2006-01-02"
+
+  # カラーテーマ（auto / dark / light）
+  colorScheme = "auto"
+  hideColorSchemeToggle = false
+
+# ヘッダーナビゲーションメニュー
+[[menu.main]]
+  name = "Blog"
+  weight = 1
+  url = "posts/"
