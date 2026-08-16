@@ -1,32 +1,157 @@
 /* ==============================================================================
-   AsciiDoc / Asciidoctor Custom Styling
+   AsciiDoc / Asciidoctor Custom Styling & Fixes
    ============================================================================== */
 
-/* Admonition Blocks (Note, Tip, Warning, Caution, Important) */
+/* Inline Code Styling (GitHub / Modern Markdown Style) */
+:not(pre) > code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
+  font-size: 0.88em !important;
+  font-weight: 500 !important;
+  padding: 0.2em 0.45em !important;
+  margin: 0 0.15em !important;
+  border-radius: 0.4rem !important;
+  background-color: rgba(175, 184, 193, 0.2) !important;
+  border: 1px solid rgba(175, 184, 193, 0.3) !important;
+  color: #0969da !important;
+  white-space: break-spaces;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto :not(pre) > code {
+    background-color: rgba(110, 118, 129, 0.35) !important;
+    border-color: rgba(110, 118, 129, 0.4) !important;
+    color: #a5d6ff !important;
+  }
+}
+
+body.colorscheme-dark :not(pre) > code {
+  background-color: rgba(110, 118, 129, 0.35) !important;
+  border-color: rgba(110, 118, 129, 0.4) !important;
+  color: #a5d6ff !important;
+}
+
+/* ==============================================================================
+   Tables (AsciiDoc .tableblock & General Tables)
+   ============================================================================== */
+
+.content table:not(.linenotable):not(.admonitionblock table) {
+  width: 100% !important;
+  margin: 2.5rem 0 !important;
+  border-collapse: collapse !important;
+  border: 1px solid #d0d7de !important;
+  border-radius: 0.6rem !important;
+  overflow: hidden !important;
+  font-size: 1.5rem !important;
+  line-height: 1.6 !important;
+  background-color: #ffffff;
+}
+
+.content table:not(.linenotable):not(.admonitionblock table) th,
+.content table:not(.linenotable):not(.admonitionblock table) td {
+  padding: 1rem 1.4rem !important;
+  border: 1px solid #d0d7de !important;
+  vertical-align: middle !important;
+}
+
+.content table:not(.linenotable):not(.admonitionblock table) th {
+  background-color: #f6f8fa !important;
+  color: #1f2328 !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+
+.content table:not(.linenotable):not(.admonitionblock table) td {
+  color: #24292f !important;
+}
+
+.content table:not(.linenotable):not(.admonitionblock table) tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.content table:not(.linenotable):not(.admonitionblock table) p,
+.content table:not(.linenotable):not(.admonitionblock table) p.tableblock {
+  margin: 0 !important;
+  line-height: inherit !important;
+}
+
+/* Dark Mode Tables */
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) {
+    border-color: #30363d !important;
+    background-color: #0d1117 !important;
+  }
+
+  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) th,
+  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) td {
+    border-color: #30363d !important;
+  }
+
+  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) th {
+    background-color: #161b22 !important;
+    color: #e6edf3 !important;
+  }
+
+  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) td {
+    color: #c9d1d9 !important;
+  }
+
+  body.colorscheme-auto .content table:not(.linenotable):not(.admonitionblock table) tr:nth-child(even) {
+    background-color: #161b22 !important;
+  }
+}
+
+body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) {
+  border-color: #30363d !important;
+  background-color: #0d1117 !important;
+}
+
+body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) th,
+body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) td {
+  border-color: #30363d !important;
+}
+
+body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) th {
+  background-color: #161b22 !important;
+  color: #e6edf3 !important;
+}
+
+body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) td {
+  color: #c9d1d9 !important;
+}
+
+body.colorscheme-dark .content table:not(.linenotable):not(.admonitionblock table) tr:nth-child(even) {
+  background-color: #161b22 !important;
+}
+
+/* ==============================================================================
+   Admonition Blocks (Note, Tip, Warning, Caution, Important)
+   ============================================================================== */
+
 .admonitionblock {
   margin: 2.5rem 0;
   width: 100%;
 }
 
 .admonitionblock table {
-  border-collapse: separate;
-  border-spacing: 0;
-  border: none;
-  background: transparent;
-  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  margin: 0 !important;
 }
 
 .admonitionblock table td {
-  border: none;
-  padding: 1.2rem 1.6rem;
-  vertical-align: middle;
+  border: none !important;
+  padding: 1.2rem 1.6rem !important;
+  vertical-align: middle !important;
 }
 
 .admonitionblock table td.icon {
   text-align: center;
   width: 4.5rem;
   font-size: 2.4rem;
-  padding-right: 0;
+  padding-right: 0 !important;
 }
 
 .admonitionblock table td.icon i.fa {
@@ -76,28 +201,28 @@
 }
 
 .admonitionblock.note table {
-  border-left: 4px solid #0284c7;
-  background-color: rgba(2, 132, 199, 0.08);
+  border-left: 4px solid #0284c7 !important;
+  background-color: rgba(2, 132, 199, 0.08) !important;
 }
 
 .admonitionblock.tip table {
-  border-left: 4px solid #eab308;
-  background-color: rgba(234, 179, 8, 0.08);
+  border-left: 4px solid #eab308 !important;
+  background-color: rgba(234, 179, 8, 0.08) !important;
 }
 
 .admonitionblock.warning table {
-  border-left: 4px solid #f97316;
-  background-color: rgba(249, 115, 22, 0.08);
+  border-left: 4px solid #f97316 !important;
+  background-color: rgba(249, 115, 22, 0.08) !important;
 }
 
 .admonitionblock.caution table {
-  border-left: 4px solid #ef4444;
-  background-color: rgba(239, 68, 68, 0.08);
+  border-left: 4px solid #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
 }
 
 .admonitionblock.important table {
-  border-left: 4px solid #dc2626;
-  background-color: rgba(220, 38, 38, 0.08);
+  border-left: 4px solid #dc2626 !important;
+  background-color: rgba(220, 38, 38, 0.08) !important;
 }
 
 /* Brand Icons fallback for Font Awesome 6 */
@@ -162,44 +287,46 @@ span.icon > i.fa {
 
 .code-block-wrapper pre code {
   background-color: transparent !important;
+  border: none !important;
   padding: 0 !important;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
+  margin: 0 !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  color: inherit !important;
 }
 
 /* Line Number Table Layout */
 .code-block-wrapper table.linenotable {
-  border-collapse: collapse;
-  border: none;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  background: transparent;
+  border-collapse: collapse !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  background: transparent !important;
 }
 
 .code-block-wrapper table.linenotable tbody,
 .code-block-wrapper table.linenotable tr {
-  border: none;
-  background: transparent;
+  border: none !important;
+  background: transparent !important;
 }
 
 .code-block-wrapper table.linenotable td {
-  border: none;
-  padding: 0;
-  vertical-align: top;
+  border: none !important;
+  padding: 0 !important;
+  vertical-align: top !important;
 }
 
 .code-block-wrapper table.linenotable td.linenos {
-  width: 1%;
-  min-width: 3.2rem;
-  padding-right: 1.4rem;
-  margin-right: 1.4rem;
-  border-right: 1px solid #d0d7de;
-  text-align: right;
-  user-select: none;
-  -webkit-user-select: none;
+  width: 1% !important;
+  min-width: 3.2rem !important;
+  padding-right: 1.4rem !important;
+  margin-right: 1.4rem !important;
+  border-right: 1px solid #d0d7de !important;
+  text-align: right !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 .code-block-wrapper table.linenotable td.linenos pre.lineno {
@@ -207,15 +334,15 @@ span.icon > i.fa {
   padding: 0 !important;
   border: none !important;
   background: transparent !important;
-  color: #8c959f;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: 1.6;
+  color: #8c959f !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: 1.6 !important;
 }
 
 .code-block-wrapper table.linenotable td.code {
-  padding-left: 1.4rem;
-  width: 100%;
+  padding-left: 1.4rem !important;
+  width: 100% !important;
 }
 
 .code-block-wrapper table.linenotable td.code pre {
@@ -223,9 +350,9 @@ span.icon > i.fa {
   padding: 0 !important;
   border: none !important;
   background: transparent !important;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: 1.6;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: 1.6 !important;
 }
 
 /* ==============================================================================
