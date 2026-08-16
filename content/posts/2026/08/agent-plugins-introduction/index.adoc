@@ -276,6 +276,7 @@ AI エージェントを単なるチャットツールとしてではなく、�
 
 == 関連記事
 
+* link:/posts/2026/08/ai-coding-rules-comparison/[【徹底比較】GitHub Copilot・Cursor・Antigravity のルール設定（copilot-instructions.md / .cursorrules / GEMINI.md）]
 * link:/posts/2026/08/agent-skills-introduction/[【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み]
 * link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]
 * link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]

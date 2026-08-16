@@ -1,0 +1,180 @@
++++
+date = '2026-08-16T11:35:00Z'
+draft = false
+title = '【徹底比較】GitHub Copilot・Cursor・Antigravity のルール設定（copilot-instructions.md / .cursorrules / GEMINI.md）'
+description = '主要な AI コーディングツールのカスタム指示ファイル（GitHub Copilot の copilot-instructions.md、Cursor の .cursorrules、Antigravity の GEMINI.md / AGENTS.md）の仕組み、仕様の比較、効果的な書き方を徹底解説します。'
+tags = ["copilot", "github", "cursor", "antigravity", "ai", "rules"]
+categories = ["Tech", "AI Development"]
++++
+
+== はじめに
+
+GitHub Copilot、Cursor、Google Antigravity（AGY）など、開発現場における AI コーディングツールの利用が急速に拡大しています。
+
+しかし、デフォルト状態の AI にコードを書かせると、以下のようなギャップが生じがちです：
+
+* チームのコーディング規約（TypeScript の型付け、命名則など）を無視してしまう
+* プロジェクト固有のディレクトリ構造やアーキテクチャ方針と合わないコードを提案される
+* 毎回チャットプロンプトで「〇〇のルールに従って」と指示を繰り返す必要がある
+
+こうした課題を解決するために各ツールで標準化が進んでいるのが、**リポジトリ内に配置する「カスタムルール設定ファイル」** です。
+
+[TIP]
+====
+ルールファイルをリポジトリ（Git）に含めておくことで、チームメンバー全員が同じコーディング基準・制約のもとで AI の支援を受けられるようになります。
+====
+
+'''
+
+== 主要 3 ツールのルール設定ファイル概要
+
+[cols="1,2,2,2", options="header"]
+|===
+| ツール | 設定ファイル名 | 配置場所 | 主な特徴
+| **GitHub Copilot** | `copilot-instructions.md` | `.github/` | リポジトリ全体に適用。Copilot Chat や PR 要約で自動参照
+| **Cursor** | `.cursorrules` / `.cursor/rules/*.mdc` | プロジェクトルート / `.cursor/rules/` | ファイル拡張子や glob パターンに応じたきめ細やかな適用が可能
+| **Google Antigravity** | `GEMINI.md` / `AGENTS.md` | 任意のディレクトリ / `.agents/rules/` | ディレクトリ階層ごとの自動走査（Walk-up）と重複排除。Skills と連動
+|===
+
+'''
+
+== 1. GitHub Copilot (`.github/copilot-instructions.md`)
+
+GitHub Copilot では、リポジトリの `.github/copilot-instructions.md` に指示を記述することで、Copilot Chat やコード生成時にプロジェクトの文脈を自動注入できます。
+
+=== ディレクトリ構造
+[source,text]
+----
+my-repository/
+└── .github/
+    └── copilot-instructions.md
+----
+
+=== 記述例 (`copilot-instructions.md`)
+[source,markdown]
+----
+# GitHub Copilot Instructions
+
+## 技術スタック
+- Node.js (v20+), TypeScript (v5+), React (Next.js App Router)
+- スタイリング: Tailwind CSS (v3)
+
+## コーディング規約
+- コンポーネントは関数コンポーネントとし、`React.FC` は使用しないでください。
+- すべての非同期関数は `try-catch` で適切にエラーハンドリングを行ってください。
+- `any` 型の使用は禁止です。不明な型には `unknown` を使用し、型ガードを実装してください。
+
+## テスト方針
+- テストフレームワークは Vitest と React Testing Library を使用してください。
+- ユニットテストファイルは対象ファイルと同階層に `.test.ts(x)` として配置してください。
+----
+
+* **強み**: GitHub エコシステムと完全に統合されており、Codespaces、VS Code、JetBrains 等の Copilot 拡張で共通利用できる。
+
+'''
+
+== 2. Cursor (`.cursorrules` / `.cursor/rules/*.mdc`)
+
+Cursor では、ルートの `.cursorrules` に記述する従来の方法に加え、`.cursor/rules/` 配下に複数のルールファイル（`.mdc` 形式）を分割配置する新仕様が導入されています。
+
+=== ディレクトリ構造
+[source,text]
+----
+my-repository/
+├── .cursorrules           # 単一ルールファイル
+└── .cursor/
+    └── rules/             # 分割ルール（MDC 形式）
+        ├── frontend.mdc
+        └── backend.mdc
+----
+
+=== 記述例 (`.cursor/rules/frontend.mdc`)
+[source,markdown]
+----
+---
+description: フロントエンド開発時のルール
+globs: src/components/**/*.{ts,tsx}, src/app/**/*.{ts,tsx}
+---
+
+# Frontend Guidelines
+
+- コンポーネントは Server Components をデフォルトとし、必要な場合のみ `'use client'` を宣言してください。
+- UI アイコンには `lucide-react` を使用してください。
+----
+
+* **強み**: `globs` による対象ファイルの絞り込みができるため、フロントエンドとバックエンドで異なるルールを適用しやすい。
+
+'''
+
+== 3. Google Antigravity (`GEMINI.md` / `AGENTS.md`)
+
+Google Antigravity（AGY）では、歴史的経緯から **`GEMINI.md`** または **`AGENTS.md`** のいずれかのファイル名でルールを定義できます。
+
+=== ディレクトリ構造
+[source,text]
+----
+my-repository/
+├── AGENTS.md               # プロジェクトルートの共通ルール
+├── backend/
+│   └── GEMINI.md           # バックエンド固有ルール
+└── .agents/
+    ├── rules/              # 専用ルールディレクトリ
+    │   └── security.md
+    └── skills/             # 【別枠】オンデマンド手順書（Runbook）
+----
+
+=== 記述例 (`AGENTS.md`)
+[source,markdown]
+----
+# Project Standards
+
+- すべてのコミットメッセージは Conventional Commits 形式に従ってください。
+- 外部 API 呼び出しにはリトライ処理とタイムアウト（最大 5000ms）を必ず設定してください。
+----
+
+* **強み**:
+  1. **階層走査（Walk-up）**: 対象ファイルを編集する際、親ディレクトリを遡って自動でルールを結合・重複排除する。
+  2. **Skills との分離**: 常時適用する規約（Rules）と、タスク発生時のみ読み込む手順書（Skills）が明確に分かれているため、トークン消費を最小限に抑えられる。
+
+'''
+
+== 効果的なルールを書くための 4 つのベストプラクティス
+
+=== 1. 「禁止」だけでなく「推奨・代替案」を明記する
+× 「`any` を使わないでください」
+○ 「`any` の使用は禁止です。型が不確定な場合は `unknown` を使い、型ガード関数でナローイングしてください」
+
+=== 2. 一般的なプログラミング知識は書かない
+「関数は短く書きましょう」や「適切な変数名をつけましょう」のような LLM が元から知っている常識は不要です。プロジェクト固有のアーキテクチャ、ディレクトリ命名則、採用ライブラリの制限に集中させます。
+
+=== 3. 長大な手順書はルールに書かない
+デプロイ手順や DB マイグレーション等の長文マニュアルを常時読み込みのルールファイルに書くと、プロンプトのコンテキストを浪ビしてしまいます。手順書は Antigravity の **Skills** などのオンデマンド機構に切り出すのがベストです。
+
+=== 4. 定期的に見直してシンプルに保つ
+ルールが多すぎると AI のアテンション（注意機構）が分散し、重要な制約を守れなくなる場合があります。チームで定期的に見直し、陳腐化したルールは削除しましょう。
+
+'''
+
+== まとめ：ツールの併用と共存
+
+現在では、1 つのリポジトリに以下のように複数の設定ファイルを同居させ、開発者が好みのツール（Copilot / Cursor / Antigravity）を選べるようにする構成が一般的です。
+
+[source,text]
+----
+my-project/
+├── .github/copilot-instructions.md   # GitHub Copilot 用
+├── .cursorrules                      # Cursor 用
+├── AGENTS.md                         # Antigravity / Gemini 用
+└── .agents/skills/                   # Antigravity Skills 用
+----
+
+それぞれのツールの特徴を活かし、チーム全体の開発体験とコード品質を高めていきましょう！
+
+'''
+
+== 関連記事
+
+* link:/posts/2026/08/agent-skills-introduction/[【徹底解説】Agent Skills 入門：AIエージェントに「自社の業務手順・Runbook」を教える仕組み]
+* link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
+* link:/posts/2026/08/mcp-introduction/[【徹底解説】MCP（Model Context Protocol）入門：AIエージェントと外部世界をつなぐ標準プロトコル]
+* link:/posts/2026/08/devcontainers-introduction/[【実践】Dev Containers 入門：開発環境をコード化してチーム全員でワンタッチ起動する]
