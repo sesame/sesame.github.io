@@ -228,6 +228,7 @@ Dev Containers を導入することで得られる最大の価値は、**「開
 
 == 関連記事
 
+* link:/posts/2026/08/why-container-development/[なぜ開発環境をコンテナ化すべきなのか：Dev Containers がもたらす圧倒的な開発体験]
 * link:/posts/2026/08/asciidoctor-in-container/[Hugo と Asciidoctor をコンテナ連携で動かす開発環境構成]
 * link:/posts/2026/08/ai-coding-rules-comparison/[GitHub Copilot・Cursor・Antigravity のルール設定比較（copilot-instructions.md / .cursorrules / GEMINI.md）]
 * link:/posts/2026/08/agent-plugins-introduction/[Agent Plugins 入門：AIエージェントの能力をパッケージ化して共有する]
