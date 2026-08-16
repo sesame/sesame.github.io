@@ -1,33 +1,52 @@
-/* ==============================================================================
-   AsciiDoc / Asciidoctor Custom Styling & Fixes
-   ============================================================================== */
-
-/* Inline Code Styling (GitHub / Modern Markdown Style) */
-:not(pre) > code {
+/* Inline Code Styling (GitHub / Modern Markdown Style - Pure Inline) */
+code {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
-  font-size: 0.88em !important;
+  font-size: 0.85em !important;
   font-weight: 500 !important;
-  padding: 0.2em 0.45em !important;
-  margin: 0 0.15em !important;
+  display: inline !important;
+  padding: 0.15em 0.35em !important;
+  margin: 0 0.2em !important;
   border-radius: 0.4rem !important;
   background-color: rgba(175, 184, 193, 0.2) !important;
   border: 1px solid rgba(175, 184, 193, 0.3) !important;
   color: #0969da !important;
-  white-space: break-spaces;
+  white-space: nowrap !important;
+  vertical-align: 0.05em !important;
 }
 
 @media (prefers-color-scheme: dark) {
-  body.colorscheme-auto :not(pre) > code {
+  body.colorscheme-auto code {
     background-color: rgba(110, 118, 129, 0.35) !important;
     border-color: rgba(110, 118, 129, 0.4) !important;
     color: #a5d6ff !important;
   }
 }
 
-body.colorscheme-dark :not(pre) > code {
+body.colorscheme-dark code {
   background-color: rgba(110, 118, 129, 0.35) !important;
   border-color: rgba(110, 118, 129, 0.4) !important;
   color: #a5d6ff !important;
+}
+
+/* Ensure pre code remains block/transparent */
+pre code,
+.code-block-wrapper pre code,
+table.linenotable code {
+  display: block !important;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  white-space: pre !important;
+  vertical-align: baseline !important;
+}
+
+/* Reset article p text-align justify to left for Japanese natural flow */
+.content article p {
+  text-align: left !important;
+  text-justify: auto !important;
 }
 
 /* ==============================================================================
