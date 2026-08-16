@@ -18,8 +18,23 @@ theme = 'hugo-coder'
   colorScheme = "auto"
   hideColorSchemeToggle = false
 
+  # カスタムCSS & JS
+  customCSS = ["css/custom.css"]
+  customJS = ["js/custom.js"]
+
 # ヘッダーナビゲーションメニュー
 [[menu.main]]
   name = "Blog"
   weight = 1
   url = "posts/"
+
+[security.exec]
+  allow = ['^(dart-)?sass(-embedded)?$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$', '^asciidoctor$']
+
+[markup.asciidocExt]
+  backend = 'html5'
+  preserveTOC = false
+  [markup.asciidocExt.attributes]
+    source-highlighter = 'rouge'
+    source-linenums-option = ''
+    icons = 'font'

@@ -1,0 +1,498 @@
+/* ==============================================================================
+   AsciiDoc / Asciidoctor Custom Styling
+   ============================================================================== */
+
+/* Admonition Blocks (Note, Tip, Warning, Caution, Important) */
+.admonitionblock {
+  margin: 2.5rem 0;
+  width: 100%;
+}
+
+.admonitionblock table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: none;
+  background: transparent;
+  width: 100%;
+}
+
+.admonitionblock table td {
+  border: none;
+  padding: 1.2rem 1.6rem;
+  vertical-align: middle;
+}
+
+.admonitionblock table td.icon {
+  text-align: center;
+  width: 4.5rem;
+  font-size: 2.4rem;
+  padding-right: 0;
+}
+
+.admonitionblock table td.icon i.fa {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-style: normal;
+  display: inline-block;
+}
+
+.admonitionblock table td.icon i.icon-note::before {
+  content: "\f05a";
+  color: #0284c7;
+}
+
+.admonitionblock table td.icon i.icon-tip::before {
+  content: "\f0eb";
+  color: #eab308;
+}
+
+.admonitionblock table td.icon i.icon-warning::before {
+  content: "\f071";
+  color: #f97316;
+}
+
+.admonitionblock table td.icon i.icon-caution::before {
+  content: "\f06d";
+  color: #ef4444;
+}
+
+.admonitionblock table td.icon i.icon-important::before {
+  content: "\f06a";
+  color: #dc2626;
+}
+
+.admonitionblock table td.content {
+  font-size: 1.6rem;
+  line-height: 1.6;
+}
+
+.admonitionblock table td.content > .title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.admonitionblock table td.content p:last-child {
+  margin-bottom: 0;
+}
+
+.admonitionblock.note table {
+  border-left: 4px solid #0284c7;
+  background-color: rgba(2, 132, 199, 0.08);
+}
+
+.admonitionblock.tip table {
+  border-left: 4px solid #eab308;
+  background-color: rgba(234, 179, 8, 0.08);
+}
+
+.admonitionblock.warning table {
+  border-left: 4px solid #f97316;
+  background-color: rgba(249, 115, 22, 0.08);
+}
+
+.admonitionblock.caution table {
+  border-left: 4px solid #ef4444;
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+.admonitionblock.important table {
+  border-left: 4px solid #dc2626;
+  background-color: rgba(220, 38, 38, 0.08);
+}
+
+/* Brand Icons fallback for Font Awesome 6 */
+.fa-brands,
+.fab,
+.fa[class*="fa-github"],
+.fa[class*="fa-twitter"],
+.fa[class*="fa-x-twitter"],
+.fa[class*="fa-docker"],
+.fa[class*="fa-linux"],
+.fa[class*="fa-apple"],
+.fa[class*="fa-windows"],
+.fa[class*="fa-android"],
+.fa[class*="fa-gitlab"],
+.fa[class*="fa-google"],
+.fa[class*="fa-youtube"],
+.fa[class*="fa-discord"],
+.fa[class*="fa-slack"] {
+  font-family: 'Font Awesome 6 Brands' !important;
+  font-weight: 400 !important;
+}
+
+/* Inline Icons sizing & alignment */
+span.icon > i.fa {
+  display: inline-block;
+  vertical-align: -0.125em;
+}
+
+/* ==============================================================================
+   Code Block Container & Wrapper (GitHub Style)
+   ============================================================================== */
+
+.listingblock {
+  margin: 2.5rem 0;
+}
+
+.code-block-wrapper {
+  position: relative;
+  margin: 2.5rem 0;
+  width: 100%;
+}
+
+.listingblock .code-block-wrapper {
+  margin: 0;
+}
+
+/* GitHub Light Background & Border */
+.code-block-wrapper pre.rouge,
+.code-block-wrapper pre {
+  margin: 0 !important;
+  padding: 1.4rem 1.6rem;
+  padding-right: 6.5rem;
+  border-radius: 0.8rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 1.45rem;
+  line-height: 1.6;
+  border: 1px solid #d0d7de;
+  background-color: #f6f8fa;
+  color: #24292f;
+}
+
+.code-block-wrapper pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* Line Number Table Layout */
+.code-block-wrapper table.linenotable {
+  border-collapse: collapse;
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: transparent;
+}
+
+.code-block-wrapper table.linenotable tbody,
+.code-block-wrapper table.linenotable tr {
+  border: none;
+  background: transparent;
+}
+
+.code-block-wrapper table.linenotable td {
+  border: none;
+  padding: 0;
+  vertical-align: top;
+}
+
+.code-block-wrapper table.linenotable td.linenos {
+  width: 1%;
+  min-width: 3.2rem;
+  padding-right: 1.4rem;
+  margin-right: 1.4rem;
+  border-right: 1px solid #d0d7de;
+  text-align: right;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.code-block-wrapper table.linenotable td.linenos pre.lineno {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  color: #8c959f;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.6;
+}
+
+.code-block-wrapper table.linenotable td.code {
+  padding-left: 1.4rem;
+  width: 100%;
+}
+
+.code-block-wrapper table.linenotable td.code pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.6;
+}
+
+/* ==============================================================================
+   GitHub Official Syntax Highlighting Theme (GitHub Light / Dark)
+   ============================================================================== */
+
+/* GitHub Light */
+pre.rouge, .highlight {
+  /* Keywords: package, import, func, return, if (GitHub Red) */
+  .k, .kd, .kn, .kp, .kr, .kt, .kv {
+    color: #cf222e !important;
+    font-weight: 600;
+  }
+
+  /* Strings: "fmt", "Hello..." (GitHub Blue) */
+  .s, .sa, .sc, .dl, .sd, .s2, .se, .sh, .sx, .s1, .ss {
+    color: #0969da !important;
+  }
+
+  /* Functions & Methods: Println, main (GitHub Purple) */
+  .nf, .fm, .na {
+    color: #8250df !important;
+    font-weight: 600;
+  }
+
+  /* Types & Built-ins: fmt, string, int (GitHub Orange) */
+  .nb, .nc, .no, .nn, .bp {
+    color: #953800 !important;
+  }
+
+  /* Numbers & Booleans: 123, true, false (GitHub Blue) */
+  .m, .mb, .mf, .mh, .mi, .il, .mo, .mx, .kc, .l, .ld {
+    color: #0550ae !important;
+  }
+
+  /* Variables & Identifiers */
+  .nv, .vc, .vg, .vi, .vm, .py {
+    color: #24292f !important;
+  }
+
+  /* Operators & Punctuation */
+  .o, .ow {
+    color: #0550ae !important;
+  }
+  .p {
+    color: #24292f !important;
+  }
+
+  /* Comments: // comment (GitHub Gray) */
+  .c, .ch, .cd, .cm, .cp, .cpf, .c1, .cs, .gl, .gt {
+    color: #6e7781 !important;
+    font-style: italic;
+  }
+
+  /* Diff additions/deletions */
+  .gi { color: #116329 !important; background-color: #dafbe1 !important; }
+  .gd { color: #82071e !important; background-color: #ffebe9 !important; }
+  .err { color: #cf222e !important; }
+}
+
+/* GitHub Dark */
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto {
+    .code-block-wrapper pre.rouge,
+    .code-block-wrapper pre {
+      background-color: #161b22;
+      border-color: #30363d;
+      color: #c9d1d9;
+    }
+
+    .code-block-wrapper table.linenotable td.linenos {
+      border-right-color: #30363d;
+    }
+
+    .code-block-wrapper table.linenotable td.linenos pre.lineno {
+      color: #6e7681;
+    }
+
+    pre.rouge, .highlight {
+      /* Keywords: func, import (GitHub Dark Coral Red) */
+      .k, .kd, .kn, .kp, .kr, .kt, .kv {
+        color: #ff7b72 !important;
+        font-weight: 600;
+      }
+      /* Strings: "fmt", "Hello..." (GitHub Dark Sky Blue) */
+      .s, .sa, .sc, .dl, .sd, .s2, .se, .sh, .sx, .s1, .ss {
+        color: #a5d6ff !important;
+      }
+      /* Functions: Println (GitHub Dark Light Purple) */
+      .nf, .fm, .na {
+        color: #d2a8ff !important;
+        font-weight: 600;
+      }
+      /* Types & Built-ins: fmt, string (GitHub Dark Light Orange) */
+      .nb, .nc, .no, .nn, .bp {
+        color: #ffa657 !important;
+      }
+      /* Numbers & Booleans: 123 (GitHub Dark Cyan) */
+      .m, .mb, .mf, .mh, .mi, .il, .mo, .mx, .kc, .l, .ld {
+        color: #79c0ff !important;
+      }
+      /* Variables */
+      .nv, .vc, .vg, .vi, .vm, .py {
+        color: #c9d1d9 !important;
+      }
+      .o, .ow {
+        color: #79c0ff !important;
+      }
+      .p {
+        color: #c9d1d9 !important;
+      }
+      /* Comments (GitHub Dark Gray) */
+      .c, .ch, .cd, .cm, .cp, .cpf, .c1, .cs, .gl, .gt {
+        color: #8b949e !important;
+        font-style: italic;
+      }
+      .gi { color: #aff5b4 !important; background-color: #033a16 !important; }
+      .gd { color: #ffdcd7 !important; background-color: #67060c !important; }
+      .err { color: #ff7b72 !important; }
+    }
+  }
+}
+
+body.colorscheme-dark {
+  .code-block-wrapper pre.rouge,
+  .code-block-wrapper pre {
+    background-color: #161b22;
+    border-color: #30363d;
+    color: #c9d1d9;
+  }
+
+  .code-block-wrapper table.linenotable td.linenos {
+    border-right-color: #30363d;
+  }
+
+  .code-block-wrapper table.linenotable td.linenos pre.lineno {
+    color: #6e7681;
+  }
+
+  pre.rouge, .highlight {
+    .k, .kd, .kn, .kp, .kr, .kt, .kv {
+      color: #ff7b72 !important;
+      font-weight: 600;
+    }
+    .s, .sa, .sc, .dl, .sd, .s2, .se, .sh, .sx, .s1, .ss {
+      color: #a5d6ff !important;
+    }
+    .nf, .fm, .na {
+      color: #d2a8ff !important;
+      font-weight: 600;
+    }
+    .nb, .nc, .no, .nn, .bp {
+      color: #ffa657 !important;
+    }
+    .m, .mb, .mf, .mh, .mi, .il, .mo, .mx, .kc, .l, .ld {
+      color: #79c0ff !important;
+    }
+    .nv, .vc, .vg, .vi, .vm, .py {
+      color: #c9d1d9 !important;
+    }
+    .o, .ow {
+      color: #79c0ff !important;
+    }
+    .p {
+      color: #c9d1d9 !important;
+    }
+    .c, .ch, .cd, .cm, .cp, .cpf, .c1, .cs, .gl, .gt {
+      color: #8b949e !important;
+      font-style: italic;
+    }
+    .gi { color: #aff5b4 !important; background-color: #033a16 !important; }
+    .gd { color: #ffdcd7 !important; background-color: #67060c !important; }
+    .err { color: #ff7b72 !important; }
+  }
+}
+
+/* ==============================================================================
+   Copy Code Button Styling
+   ============================================================================== */
+
+.code-block-wrapper .copy-code-button {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 1;
+  color: #57606a;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid #d0d7de;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.code-block-wrapper .copy-code-button i {
+  font-size: 1.1rem;
+}
+
+.code-block-wrapper .copy-code-button:active {
+  transform: scale(0.95);
+}
+
+.code-block-wrapper:hover .copy-code-button,
+.code-block-wrapper .copy-code-button:focus,
+.code-block-wrapper .copy-code-button.copied {
+  opacity: 1;
+}
+
+.code-block-wrapper .copy-code-button:hover {
+  color: #24292f;
+  background-color: #ffffff;
+  border-color: #8c959f;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.code-block-wrapper .copy-code-button.copied {
+  color: #1a7f37 !important;
+  background-color: #dafbe1 !important;
+  border-color: #4ac26b !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto .code-block-wrapper .copy-code-button {
+    color: #8b949e;
+    background-color: rgba(22, 27, 34, 0.9);
+    border-color: #30363d;
+  }
+
+  body.colorscheme-auto .code-block-wrapper .copy-code-button:hover {
+    color: #c9d1d9;
+    background-color: #21262d;
+    border-color: #8b949e;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  body.colorscheme-auto .code-block-wrapper .copy-code-button.copied {
+    color: #3fb950 !important;
+    background-color: rgba(46, 160, 67, 0.25) !important;
+    border-color: #2ea043 !important;
+  }
+}
+
+body.colorscheme-dark .code-block-wrapper .copy-code-button {
+  color: #8b949e;
+  background-color: rgba(22, 27, 34, 0.9);
+  border-color: #30363d;
+}
+
+body.colorscheme-dark .code-block-wrapper .copy-code-button:hover {
+  color: #c9d1d9;
+  background-color: #21262d;
+  border-color: #8b949e;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+body.colorscheme-dark .code-block-wrapper .copy-code-button.copied {
+  color: #3fb950 !important;
+  background-color: rgba(46, 160, 67, 0.25) !important;
+  border-color: #2ea043 !important;
+}

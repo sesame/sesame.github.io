@@ -58,6 +58,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Setup Ruby and Asciidoctor
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Install Asciidoctor and Rouge
+        run: |
+          gem install asciidoctor rouge
+
       - name: Install Dart Sass
         run: |
           echo "Installing Dart Sass ${DART_SASS_VERSION}..."
