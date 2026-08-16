@@ -19,7 +19,10 @@ Google Antigravity（AGY）などの高度な AI コーディングエージェ�
 
 こうした課題を解決するために用意されているのが、**Agent Plugins（エージェントプラグイン）** の仕組みです。
 
-TIP: Plugins を活用すると、複数の Skills・Rules・Hooks・MCP を 1 つの「配布可能パッケージ」としてまとめ、チームやプロジェクト間で手軽に共有できるようになります。
+[TIP]
+====
+Plugins を活用すると、複数の Skills・Rules・Hooks・MCP を 1 つの「配布可能パッケージ」としてまとめ、チームやプロジェクト間で手軽に共有できるようになります。
+====
 
 '''
 
@@ -77,7 +80,10 @@ plugins/my-team-plugin/
 }
 ----
 
-NOTE: プラグインを標準で無効状態（OFF）で配布したい場合は、`"disabled": true` を指定することも可能です。
+[NOTE]
+====
+プラグインを標準で無効状態（OFF）で配布したい場合は、`"disabled": true` を指定することも可能です。
+====
 
 === 2. ルールの同梱 (`rules/AGENTS.md`)
 
@@ -177,7 +183,10 @@ agy plugin enable devops-toolkit
 agy plugin disable devops-toolkit
 ----
 
-IMPORTANT: プラグインの有効/無効設定は各ユーザーのローカル設定（`config.json`）に記録されるため、プラグイン本体のファイルを汚さずに個人の環境に合わせて切り替えられます。
+[IMPORTANT]
+====
+プラグインの有効/無効設定は各ユーザーのローカル設定（`config.json`）に記録されるため、プラグイン本体のファイルを汚さずに個人の環境に合わせて切り替えられます。
+====
 
 '''
 

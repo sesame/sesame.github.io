@@ -1,17 +1,22 @@
-/* Inline Code Styling (GitHub / Modern Markdown Style - Pure Inline) */
+/* ==============================================================================
+   Inline Code Styling (GitHub / Modern Markdown Style)
+   ============================================================================== */
+
 code {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
   font-size: 0.85em !important;
   font-weight: 500 !important;
   display: inline !important;
   padding: 0.15em 0.35em !important;
-  margin: 0 0.2em !important;
+  margin: 0 0.1em !important;
   border-radius: 0.4rem !important;
   background-color: rgba(175, 184, 193, 0.2) !important;
   border: 1px solid rgba(175, 184, 193, 0.3) !important;
   color: #0969da !important;
-  white-space: nowrap !important;
-  vertical-align: 0.05em !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  line-height: inherit !important;
+  vertical-align: baseline !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -237,13 +242,20 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 
 .admonitionblock table td.content {
   font-size: 1.55rem !important;
-  line-height: 1.6 !important;
+  line-height: 1.7 !important;
   color: #24292f !important;
+  text-align: left !important;
+  white-space: normal !important;
 }
 
 .admonitionblock table td.content > .title {
   font-weight: bold;
   margin-bottom: 0.5rem;
+}
+
+.admonitionblock table td.content p {
+  margin: 0 !important;
+  line-height: inherit !important;
 }
 
 .admonitionblock table td.content p:last-child {
