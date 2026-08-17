@@ -1,4 +1,4 @@
-# -- Theme Options (Blowfish) --
+# -- Blowfish Theme Default Configuration --
 
 colorScheme = "blowfish"
 defaultAppearance = "light"
@@ -37,7 +37,7 @@ smartTOCHideUnfocusedChildren = false
   showRecentItems = 10
   showMoreLink = true
   showMoreLinkDest = "/posts/"
-  cardView = true
+  cardView = false
 
 [article]
   showDate = true
@@ -61,8 +61,8 @@ smartTOCHideUnfocusedChildren = false
   showBreadcrumbs = true
   showSummary = true
   showTableOfContents = false
-  groupByYear = false
-  cardView = true
+  groupByYear = true
+  cardView = false
 
 [taxonomy]
   showTermCount = true
