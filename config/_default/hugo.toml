@@ -1,0 +1,27 @@
+# -- Site Configuration --
+baseURL = 'https://sesame.purplemoon.org/'
+defaultContentLanguage = 'ja'
+theme = 'blowfish'
+
+enableRobotsTXT = true
+enableEmoji = true
+
+[pagination]
+  pagerSize = 10
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+  author = "authors"
+  series = "series"
+
+[sitemap]
+  changefreq = 'daily'
+  filename = 'sitemap.xml'
+  priority = 0.5
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[security.exec]
+  allow = ['^(dart-)?sass(-embedded)?$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$', '^asciidoctor$']

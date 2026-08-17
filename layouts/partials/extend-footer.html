@@ -1,0 +1,77 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // 1. AsciiDoc の目次 (#toc) を右側の Blowfish スティッキーサイドバーへ移設
+  var asciiDocToc = document.getElementById("toc");
+  var tocContainer = document.getElementById("article-toc-container");
+
+  if (asciiDocToc && tocContainer) {
+    // 既存のサイドバーが空の場合に AsciiDoc の TOC を挿入
+    if (!tocContainer.querySelector("nav#TableOfContents")) {
+      var nav = document.createElement("nav");
+      nav.id = "TableOfContents";
+      nav.className = "toc-nav";
+
+      // タイトル（目次）
+      var titleElem = asciiDocToc.querySelector("#toctitle");
+      var titleText = titleElem ? titleElem.innerText : "目次";
+      var headerDiv = document.createElement("div");
+      headerDiv.className = "flex font-bold text-xl uppercase tracking-wide text-neutral-800 dark:text-neutral-200 mb-3";
+      headerDiv.innerHTML = '<i class="fa-solid fa-list-ul mr-2 text-primary-500"></i>' + titleText;
+      nav.appendChild(headerDiv);
+
+      // リスト構造を複製して配置
+      var ul = asciiDocToc.querySelector("ul");
+      if (ul) {
+        nav.appendChild(ul.cloneNode(true));
+      }
+
+      tocContainer.appendChild(nav);
+      // 本文先頭の重複 TOC を非表示または削除
+      asciiDocToc.style.display = "none";
+    }
+  }
+
+  // 2. スクロールスパイ（読んでいる見出しのハイライト）
+  var tocLinks = document.querySelectorAll("#article-toc-container a[href^='#']");
+  if (tocLinks.length > 0) {
+    var headings = [];
+    tocLinks.forEach(function (link) {
+      var id = decodeURIComponent(link.getAttribute("href").slice(1));
+      var heading = document.getElementById(id);
+      if (heading) {
+        headings.push({ link: link, heading: heading });
+      }
+    });
+
+    function highlightTOC() {
+      var scrollPos = window.scrollY + 120;
+      var current = null;
+
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].heading.offsetTop <= scrollPos) {
+          current = headings[i];
+        }
+      }
+
+      headings.forEach(function (item) {
+        item.link.classList.remove("text-primary-600", "dark:text-primary-400", "font-bold", "toc-active");
+        item.link.classList.add("text-neutral-500", "dark:text-neutral-400");
+      });
+
+      if (current) {
+        current.link.classList.remove("text-neutral-500", "dark:text-neutral-400");
+        current.link.classList.add("text-primary-600", "dark:text-primary-400", "font-bold", "toc-active");
+      }
+    }
+
+    window.addEventListener("scroll", highlightTOC, { passive: true });
+    highlightTOC();
+  }
+});
+</script>
+
+{{ $customJS := resources.Get "js/custom.js" }}
+{{ if $customJS }}
+  {{ $customJS = $customJS | resources.Fingerprint }}
+  <script src="{{ $customJS.RelPermalink }}" integrity="{{ $customJS.Data.Integrity }}"></script>
+{{ end }}
