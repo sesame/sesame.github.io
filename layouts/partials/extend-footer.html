@@ -1,1 +1,54 @@
-<!-- Blowfish native footer extension (empty) -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Move AsciiDoc TOC into the Blowfish sticky sidebar container
+  var asciiDocToc = document.getElementById("toc");
+  var tocContainer = document.getElementById("article-toc-container");
+
+  if (asciiDocToc && tocContainer) {
+    if (!tocContainer.querySelector("#TableOfContents") && !tocContainer.querySelector(".toc-list")) {
+      var clonedToc = asciiDocToc.cloneNode(true);
+      clonedToc.id = "TableOfContents";
+      clonedToc.classList.add("toc-list");
+      tocContainer.appendChild(clonedToc);
+      asciiDocToc.style.display = "none";
+    }
+  }
+
+  // Active heading highlighting (Scrollspy)
+  var tocLinks = document.querySelectorAll("#article-toc-container a[href^='#']");
+  if (tocLinks.length > 0) {
+    var headings = [];
+    tocLinks.forEach(function (link) {
+      var id = decodeURIComponent(link.getAttribute("href").substring(1));
+      var heading = document.getElementById(id);
+      if (heading) {
+        headings.push({ link: link, heading: heading });
+      }
+    });
+
+    function updateActiveToc() {
+      var scrollPos = window.scrollY + 140;
+      var current = null;
+
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].heading.offsetTop <= scrollPos) {
+          current = headings[i];
+        } else {
+          break;
+        }
+      }
+
+      tocLinks.forEach(function (link) {
+        link.classList.remove("toc-active");
+      });
+
+      if (current) {
+        current.link.classList.add("toc-active");
+      }
+    }
+
+    window.addEventListener("scroll", updateActiveToc, { passive: true });
+    updateActiveToc();
+  }
+});
+</script>

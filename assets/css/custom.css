@@ -1,41 +1,358 @@
 /* ==============================================================================
-   Blowfish Native Default Styles
+   Blowfish Custom Enhancements: High-Contrast Cards & Clear Sticky TOC
    ============================================================================== */
 
-/* AsciiDoc Table Support */
+/* Japanese Typography & Background */
+body {
+  font-family: "Noto Sans JP", var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f6f8fa !important;
+  color: #1f2328;
+}
+
+.dark body {
+  background-color: #0d1117 !important;
+  color: #e6edf3;
+}
+
+/* ==============================================================================
+   Article Container & Card Styles (High Visibility & Contrast)
+   ============================================================================== */
+
+/* Single Article Content Card */
+article {
+  background-color: #ffffff;
+  border: 1px solid #d0d7de;
+  border-radius: 0.75rem;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 3rem;
+}
+
+.dark article {
+  background-color: #161b22;
+  border-color: #30363d;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  article {
+    padding: 1.5rem 1.2rem;
+    border-radius: 0.5rem;
+  }
+}
+
+/* Article Link Cards on Homepage & Posts */
+.article-link--card {
+  background-color: #ffffff !important;
+  border: 1px solid #d0d7de !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+}
+
+.article-link--card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  border-color: #0969da !important;
+}
+
+.dark .article-link--card {
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
+}
+
+.dark .article-link--card:hover {
+  border-color: #58a6ff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ==============================================================================
+   Right-Sidebar Sticky TOC (Table of Contents) Card
+   ============================================================================== */
+
+#article-toc-container {
+  background-color: #ffffff;
+  border: 1px solid #d0d7de;
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.4rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.dark #article-toc-container {
+  background-color: #161b22;
+  border-color: #30363d;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+#article-toc-container #toctitle,
+#article-toc-container .toc-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2328;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #d0d7de;
+  display: block;
+}
+
+.dark #article-toc-container #toctitle,
+.dark #article-toc-container .toc-title {
+  color: #e6edf3;
+  border-bottom-color: #30363d;
+}
+
+#article-toc-container ul {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+}
+
+#article-toc-container li {
+  margin: 0.35rem 0;
+  padding-left: 0;
+}
+
+#article-toc-container ul ul {
+  padding-left: 0.75rem !important;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-left: 1.5px solid #d0d7de;
+}
+
+.dark #article-toc-container ul ul {
+  border-left-color: #30363d;
+}
+
+#article-toc-container a {
+  color: #57606a;
+  text-decoration: none !important;
+  display: block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  transition: all 0.15s ease-in-out;
+  border-left: 2.5px solid transparent;
+}
+
+.dark #article-toc-container a {
+  color: #8b949e;
+}
+
+#article-toc-container a:hover {
+  color: #0969da;
+  background-color: rgba(9, 105, 218, 0.08);
+}
+
+.dark #article-toc-container a:hover {
+  color: #58a6ff;
+  background-color: rgba(88, 166, 255, 0.12);
+}
+
+#article-toc-container a.toc-active {
+  color: #0969da !important;
+  font-weight: 700 !important;
+  background-color: rgba(9, 105, 218, 0.1);
+  border-left: 2.5px solid #0969da;
+}
+
+.dark #article-toc-container a.toc-active {
+  color: #58a6ff !important;
+  background-color: rgba(88, 166, 255, 0.15);
+  border-left: 2.5px solid #58a6ff;
+}
+
+/* ==============================================================================
+   AsciiDoc Data Tables (.tableblock)
+   ============================================================================== */
+
 table.tableblock {
   width: 100%;
-  margin: 1.5rem 0;
+  margin: 2rem 0;
   border-collapse: collapse;
+  border: 1px solid #d0d7de;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  background-color: #ffffff;
 }
 
 table.tableblock th,
 table.tableblock td {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(156, 163, 175, 0.3);
+  padding: 0.75rem 1rem;
+  border: 1px solid #d0d7de;
+  vertical-align: middle;
 }
 
 table.tableblock th {
-  background-color: rgba(156, 163, 175, 0.1);
+  background-color: #f6f8fa;
+  font-weight: 600;
+  color: #1f2328;
+  text-align: left;
 }
 
-/* AsciiDoc Admonition Icons Support */
+table.tableblock tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+table.tableblock p,
+table.tableblock p.tableblock {
+  margin: 0;
+  line-height: inherit;
+}
+
+/* Dark Mode Tables */
+.dark table.tableblock {
+  border-color: #30363d;
+  background-color: #0d1117;
+}
+
+.dark table.tableblock th {
+  background-color: #161b22;
+  border-color: #30363d;
+  color: #e6edf3;
+}
+
+.dark table.tableblock td {
+  border-color: #30363d;
+  color: #c9d1d9;
+}
+
+.dark table.tableblock tr:nth-child(even) {
+  background-color: rgba(22, 27, 34, 0.5);
+}
+
+/* ==============================================================================
+   AsciiDoc Admonition Blocks (Note, Tip, Warning, Caution, Important)
+   ============================================================================== */
+
 .admonitionblock {
-  margin: 1.5rem 0;
+  margin: 1.8rem 0;
+  width: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
-.admonitionblock table {
+.admonitionblock > table {
+  border-collapse: collapse;
+  border-spacing: 0;
   border: none;
+  background: transparent;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.admonitionblock > table > tbody > tr > td,
+.admonitionblock > table > tr > td {
+  border: none;
+  padding: 1rem 1.2rem;
+  vertical-align: top;
   background: transparent;
 }
 
-.admonitionblock td {
-  border: none;
-  padding: 0.5rem;
+.admonitionblock > table > tbody > tr > td.icon,
+.admonitionblock > table > tr > td.icon {
+  text-align: center;
+  width: 3rem;
+  min-width: 3rem;
+  max-width: 3rem;
+  font-size: 1.4rem;
+  padding-right: 0;
+  padding-top: 1rem;
 }
 
-.admonitionblock.note { border-left: 3px solid #0284c7; padding-left: 1rem; }
-.admonitionblock.tip { border-left: 3px solid #eab308; padding-left: 1rem; }
-.admonitionblock.warning { border-left: 3px solid #f97316; padding-left: 1rem; }
-.admonitionblock.caution { border-left: 3px solid #ef4444; padding-left: 1rem; }
-.admonitionblock.important { border-left: 3px solid #dc2626; padding-left: 1rem; }
+.admonitionblock > table > tbody > tr > td.icon i.fa,
+.admonitionblock > table > tr > td.icon i.fa {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+}
+
+.admonitionblock > table > tbody > tr > td.icon i.icon-note::before,
+.admonitionblock > table > tr > td.icon i.icon-note::before {
+  content: "\f05a";
+  color: #0284c7;
+}
+
+.admonitionblock > table > tbody > tr > td.icon i.icon-tip::before,
+.admonitionblock > table > tr > td.icon i.icon-tip::before {
+  content: "\f0eb";
+  color: #eab308;
+}
+
+.admonitionblock > table > tbody > tr > td.icon i.icon-warning::before,
+.admonitionblock > table > tr > td.icon i.icon-warning::before {
+  content: "\f071";
+  color: #f97316;
+}
+
+.admonitionblock > table > tbody > tr > td.icon i.icon-caution::before,
+.admonitionblock > table > tr > td.icon i.icon-caution::before {
+  content: "\f06d";
+  color: #ef4444;
+}
+
+.admonitionblock > table > tbody > tr > td.icon i.icon-important::before,
+.admonitionblock > table > tr > td.icon i.icon-important::before {
+  content: "\f06a";
+  color: #dc2626;
+}
+
+.admonitionblock > table > tbody > tr > td.content,
+.admonitionblock > table > tr > td.content,
+.admonitionblock td.content {
+  display: table-cell;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  text-align: left;
+  vertical-align: top;
+  padding-left: 0.6rem;
+  color: #24292f;
+}
+
+.dark .admonitionblock td.content {
+  color: #e6edf3;
+}
+
+.admonitionblock td.content > .title {
+  display: block;
+  width: 100%;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+}
+
+.admonitionblock td.content > .paragraph {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+.admonitionblock td.content p {
+  margin: 0.3rem 0;
+  line-height: 1.7;
+}
+
+/* Light Theme Admonition */
+.admonitionblock.note { border-left: 4px solid #0284c7; background-color: rgba(2, 132, 199, 0.08); }
+.admonitionblock.tip { border-left: 4px solid #eab308; background-color: rgba(234, 179, 8, 0.08); }
+.admonitionblock.warning { border-left: 4px solid #f97316; background-color: rgba(249, 115, 22, 0.08); }
+.admonitionblock.caution { border-left: 4px solid #ef4444; background-color: rgba(239, 68, 68, 0.08); }
+.admonitionblock.important { border-left: 4px solid #dc2626; background-color: rgba(220, 38, 38, 0.08); }
+
+/* Dark Theme Admonition */
+.dark .admonitionblock.note { background-color: rgba(2, 132, 199, 0.18); }
+.dark .admonitionblock.tip { background-color: rgba(234, 179, 8, 0.18); }
+.dark .admonitionblock.warning { background-color: rgba(249, 115, 22, 0.18); }
+.dark .admonitionblock.caution { background-color: rgba(239, 68, 68, 0.18); }
+.dark .admonitionblock.important { background-color: rgba(220, 38, 38, 0.18); }

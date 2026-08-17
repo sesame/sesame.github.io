@@ -1,6 +1,6 @@
-# -- Blowfish Theme Default Configuration --
+# -- Blowfish Theme Configuration --
 
-colorScheme = "blowfish"
+colorScheme = "github"
 defaultAppearance = "light"
 autoSwitchAppearance = true
 keywords = ["blog", "developer", "ai", "tech"]
@@ -37,7 +37,7 @@ smartTOCHideUnfocusedChildren = false
   showRecentItems = 10
   showMoreLink = true
   showMoreLinkDest = "/posts/"
-  cardView = false
+  cardView = true
 
 [article]
   showDate = true
@@ -61,8 +61,8 @@ smartTOCHideUnfocusedChildren = false
   showBreadcrumbs = true
   showSummary = true
   showTableOfContents = false
-  groupByYear = true
-  cardView = false
+  groupByYear = false
+  cardView = true
 
 [taxonomy]
   showTermCount = true
