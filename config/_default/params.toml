@@ -1,6 +1,6 @@
 # -- Blowfish Theme Configuration --
 
-colorScheme = "blowfish"
+colorScheme = "ocean"
 defaultAppearance = "light"
 autoSwitchAppearance = true
 keywords = ["blog", "developer", "ai", "tech"]
@@ -22,7 +22,7 @@ smartTOC = true
 smartTOCHideUnfocusedChildren = false
 
 [header]
-  layout = "basic"
+  layout = "fixed-gradient"
 
 [footer]
   showMenu = true
