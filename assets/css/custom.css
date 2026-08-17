@@ -786,3 +786,142 @@ body.colorscheme-dark .code-block-wrapper .copy-code-button.copied {
   background-color: rgba(46, 160, 67, 0.25) !important;
   border-color: #2ea043 !important;
 }
+
+/* ==============================================================================
+   Table of Contents (TOC) Styling (Modern GitHub Style)
+   ============================================================================== */
+
+#toc,
+.toc {
+  margin: 2.5rem 0 3.5rem 0 !important;
+  padding: 1.8rem 2.2rem !important;
+  border-radius: 0.8rem !important;
+  background-color: #f6f8fa !important;
+  border: 1px solid #d0d7de !important;
+}
+
+#toc #toctitle,
+.toc .toctitle,
+.toc .toc__title {
+  font-size: 1.7rem !important;
+  font-weight: 700 !important;
+  color: #1f2328 !important;
+  margin-bottom: 1.2rem !important;
+  padding-bottom: 0.8rem !important;
+  border-bottom: 1px solid #d0d7de !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+}
+
+#toc #toctitle::before {
+  content: "\f022";
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+  color: #0969da !important;
+  font-size: 1.6rem !important;
+}
+
+#toc ul {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+}
+
+#toc ul.sectlevel1 > li {
+  margin: 0.7rem 0 !important;
+  font-size: 1.5rem !important;
+  line-height: 1.6 !important;
+}
+
+#toc ul.sectlevel2 {
+  padding-left: 1.6rem !important;
+  margin: 0.4rem 0 !important;
+  border-left: 2px solid #e1e4e8 !important;
+}
+
+#toc ul.sectlevel2 > li {
+  margin: 0.4rem 0 !important;
+  font-size: 1.4rem !important;
+}
+
+#toc ul.sectlevel3 {
+  padding-left: 1.4rem !important;
+  margin: 0.3rem 0 !important;
+}
+
+#toc ul.sectlevel3 > li {
+  margin: 0.3rem 0 !important;
+  font-size: 1.35rem !important;
+}
+
+#toc a {
+  color: #0969da !important;
+  text-decoration: none !important;
+  transition: color 0.15s ease !important;
+  display: inline-block !important;
+}
+
+#toc a:hover {
+  color: #0550ae !important;
+  text-decoration: underline !important;
+}
+
+/* Dark Mode TOC */
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto #toc,
+  body.colorscheme-auto .toc {
+    background-color: #161b22 !important;
+    border-color: #30363d !important;
+  }
+
+  body.colorscheme-auto #toc #toctitle,
+  body.colorscheme-auto .toc .toctitle {
+    color: #e6edf3 !important;
+    border-bottom-color: #30363d !important;
+  }
+
+  body.colorscheme-auto #toc #toctitle::before {
+    color: #58a6ff !important;
+  }
+
+  body.colorscheme-auto #toc ul.sectlevel2 {
+    border-left-color: #30363d !important;
+  }
+
+  body.colorscheme-auto #toc a {
+    color: #58a6ff !important;
+  }
+
+  body.colorscheme-auto #toc a:hover {
+    color: #79c0ff !important;
+  }
+}
+
+body.colorscheme-dark #toc,
+body.colorscheme-dark .toc {
+  background-color: #161b22 !important;
+  border-color: #30363d !important;
+}
+
+body.colorscheme-dark #toc #toctitle,
+body.colorscheme-dark .toc .toctitle {
+  color: #e6edf3 !important;
+  border-bottom-color: #30363d !important;
+}
+
+body.colorscheme-dark #toc #toctitle::before {
+  color: #58a6ff !important;
+}
+
+body.colorscheme-dark #toc ul.sectlevel2 {
+  border-left-color: #30363d !important;
+}
+
+body.colorscheme-dark #toc a {
+  color: #58a6ff !important;
+}
+
+body.colorscheme-dark #toc a:hover {
+  color: #79c0ff !important;
+}

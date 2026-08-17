@@ -34,8 +34,11 @@ theme = 'hugo-coder'
 
 [markup.asciidocExt]
   backend = 'html5'
-  preserveTOC = false
+  preserveTOC = true
   [markup.asciidocExt.attributes]
     source-highlighter = 'rouge'
     source-linenums-option = ''
     icons = 'font'
+    toc = 'auto'
+    toc-title = '目次'
+    toclevels = '3'
