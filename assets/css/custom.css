@@ -274,7 +274,11 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 }
 
 .admonitionblock > table > tbody > tr > td.content,
-.admonitionblock > table > tr > td.content {
+.admonitionblock > table > tr > td.content,
+.admonitionblock td.content {
+  display: table-cell !important;
+  flex: none !important;
+  margin: 0 !important;
   font-size: 1.5rem !important;
   line-height: 1.7 !important;
   color: #24292f !important;
@@ -284,27 +288,31 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   padding-left: 0.8rem !important;
 }
 
-.admonitionblock > table > tbody > tr > td.content > .title,
-.admonitionblock > table > tr > td.content > .title {
+.admonitionblock td.content > .title {
+  display: block !important;
+  width: 100% !important;
   font-weight: 700 !important;
   margin-bottom: 0.6rem !important;
   font-size: 1.55rem !important;
   color: inherit !important;
 }
 
-.admonitionblock > table > tbody > tr > td.content p,
-.admonitionblock > table > tr > td.content p {
+.admonitionblock td.content > .paragraph {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.admonitionblock td.content p {
   margin: 0.4rem 0 !important;
   line-height: 1.7 !important;
 }
 
-.admonitionblock > table > tbody > tr > td.content p:first-child,
-.admonitionblock > table > tr > td.content p:first-child {
+.admonitionblock td.content p:first-child {
   margin-top: 0 !important;
 }
 
-.admonitionblock > table > tbody > tr > td.content p:last-child,
-.admonitionblock > table > tr > td.content p:last-child {
+.admonitionblock td.content p:last-child {
   margin-bottom: 0 !important;
 }
 
@@ -337,7 +345,8 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 /* Admonition Box Themes (Dark) */
 @media (prefers-color-scheme: dark) {
   body.colorscheme-auto .admonitionblock > table > tbody > tr > td.content,
-  body.colorscheme-auto .admonitionblock > table > tr > td.content {
+  body.colorscheme-auto .admonitionblock > table > tr > td.content,
+  body.colorscheme-auto .admonitionblock td.content {
     color: #e6edf3 !important;
   }
   body.colorscheme-auto .admonitionblock.note {
@@ -358,7 +367,8 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 }
 
 body.colorscheme-dark .admonitionblock > table > tbody > tr > td.content,
-body.colorscheme-dark .admonitionblock > table > tr > td.content {
+body.colorscheme-dark .admonitionblock > table > tr > td.content,
+body.colorscheme-dark .admonitionblock td.content {
   color: #e6edf3 !important;
 }
 body.colorscheme-dark .admonitionblock.note {
