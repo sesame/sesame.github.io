@@ -197,7 +197,7 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   overflow: hidden !important;
 }
 
-.admonitionblock table {
+.admonitionblock > table {
   border-collapse: collapse !important;
   border-spacing: 0 !important;
   border: none !important;
@@ -207,20 +207,23 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   padding: 0 !important;
 }
 
-.admonitionblock table tbody,
-.admonitionblock table tr {
+.admonitionblock > table > tbody,
+.admonitionblock > table > tbody > tr,
+.admonitionblock > table > tr {
   border: none !important;
   background: transparent !important;
 }
 
-.admonitionblock table td {
+.admonitionblock > table > tbody > tr > td,
+.admonitionblock > table > tr > td {
   border: none !important;
   padding: 1.2rem 1.6rem !important;
   vertical-align: middle !important;
   background: transparent !important;
 }
 
-.admonitionblock table td.icon {
+.admonitionblock > table > tbody > tr > td.icon,
+.admonitionblock > table > tr > td.icon {
   text-align: center !important;
   width: 4.5rem !important;
   min-width: 4.5rem !important;
@@ -228,39 +231,46 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   padding-right: 0 !important;
 }
 
-.admonitionblock table td.icon i.fa {
+.admonitionblock > table > tbody > tr > td.icon i.fa,
+.admonitionblock > table > tr > td.icon i.fa {
   font-family: "Font Awesome 6 Free" !important;
   font-weight: 900 !important;
   font-style: normal !important;
   display: inline-block !important;
 }
 
-.admonitionblock table td.icon i.icon-note::before {
+.admonitionblock > table > tbody > tr > td.icon i.icon-note::before,
+.admonitionblock > table > tr > td.icon i.icon-note::before {
   content: "\f05a";
   color: #0284c7;
 }
 
-.admonitionblock table td.icon i.icon-tip::before {
+.admonitionblock > table > tbody > tr > td.icon i.icon-tip::before,
+.admonitionblock > table > tr > td.icon i.icon-tip::before {
   content: "\f0eb";
   color: #eab308;
 }
 
-.admonitionblock table td.icon i.icon-warning::before {
+.admonitionblock > table > tbody > tr > td.icon i.icon-warning::before,
+.admonitionblock > table > tr > td.icon i.icon-warning::before {
   content: "\f071";
   color: #f97316;
 }
 
-.admonitionblock table td.icon i.icon-caution::before {
+.admonitionblock > table > tbody > tr > td.icon i.icon-caution::before,
+.admonitionblock > table > tr > td.icon i.icon-caution::before {
   content: "\f06d";
   color: #ef4444;
 }
 
-.admonitionblock table td.icon i.icon-important::before {
+.admonitionblock > table > tbody > tr > td.icon i.icon-important::before,
+.admonitionblock > table > tr > td.icon i.icon-important::before {
   content: "\f06a";
   color: #dc2626;
 }
 
-.admonitionblock table td.content {
+.admonitionblock > table > tbody > tr > td.content,
+.admonitionblock > table > tr > td.content {
   font-size: 1.55rem !important;
   line-height: 1.7 !important;
   color: #24292f !important;
@@ -268,18 +278,32 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   white-space: normal !important;
 }
 
-.admonitionblock table td.content > .title {
+.admonitionblock > table > tbody > tr > td.content > .title,
+.admonitionblock > table > tr > td.content > .title {
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.6rem;
 }
 
-.admonitionblock table td.content p {
-  margin: 0 !important;
+.admonitionblock > table > tbody > tr > td.content p,
+.admonitionblock > table > tr > td.content p {
+  margin: 0.6rem 0 !important;
   line-height: inherit !important;
 }
 
-.admonitionblock table td.content p:last-child {
+.admonitionblock > table > tbody > tr > td.content p:first-child,
+.admonitionblock > table > tr > td.content p:first-child {
+  margin-top: 0 !important;
+}
+
+.admonitionblock > table > tbody > tr > td.content p:last-child,
+.admonitionblock > table > tr > td.content p:last-child {
   margin-bottom: 0 !important;
+}
+
+/* Ensure inner tables within admonition blocks render properly */
+.admonitionblock .content table.tableblock {
+  margin: 1.5rem 0 !important;
 }
 
 /* Admonition Box Themes (Light) */
@@ -310,7 +334,8 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 
 /* Admonition Box Themes (Dark) */
 @media (prefers-color-scheme: dark) {
-  body.colorscheme-auto .admonitionblock table td.content {
+  body.colorscheme-auto .admonitionblock > table > tbody > tr > td.content,
+  body.colorscheme-auto .admonitionblock > table > tr > td.content {
     color: #e6edf3 !important;
   }
   body.colorscheme-auto .admonitionblock.note {
@@ -330,7 +355,8 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   }
 }
 
-body.colorscheme-dark .admonitionblock table td.content {
+body.colorscheme-dark .admonitionblock > table > tbody > tr > td.content,
+body.colorscheme-dark .admonitionblock > table > tr > td.content {
   color: #e6edf3 !important;
 }
 body.colorscheme-dark .admonitionblock.note {
