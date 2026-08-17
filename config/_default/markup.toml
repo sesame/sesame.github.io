@@ -1,32 +1,33 @@
-# -- Markup --
+# -- Markup Configuration --
+
+[highlight]
+  codeFences = true
+  guessSyntax = true
+  lineNos = true
+  lineNumbersInTable = true
+  noClasses = false
+
 [goldmark]
-  [goldmark.parser]
-    wrapStandAloneImageWithinParagraph = false
-    [goldmark.parser.attribute]
-      block = true
   [goldmark.renderer]
     unsafe = true
+  [goldmark.parser.attribute]
+    block = true
+    title = true
   [goldmark.extensions]
+    definitionList = true
+    footnote = true
+    linkify = true
+    strikethrough = true
+    table = true
+    taskList = true
+    typographer = true
     [goldmark.extensions.passthrough]
       enable = true
       [goldmark.extensions.passthrough.delimiters]
         block = [['\[', '\]'], ['$$', '$$']]
         inline = [['\(', '\)']]
 
-[highlight]
-  noClasses = false
-
 [tableOfContents]
   startLevel = 2
   endLevel = 4
-
-[asciidocExt]
-  backend = 'html5'
-  preserveTOC = true
-  [asciidocExt.attributes]
-    source-highlighter = 'rouge'
-    source-linenums-option = ''
-    icons = 'font'
-    toc = 'auto'
-    toc-title = '目次'
-    toclevels = '3'
+  ordered = false

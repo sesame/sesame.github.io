@@ -1,73 +1,150 @@
-# -- Blowfish Theme Configuration --
+# -- FixIt Theme Configuration --
 
-colorScheme = "ocean"
-defaultAppearance = "light"
-autoSwitchAppearance = true
-keywords = ["blog", "developer", "ai", "tech"]
+version = "1.0.X"
+description = "開発や検証の技術メモ・備忘録"
+keywords = ["blog", "developer", "container", "security", "infra"]
+default_theme = "auto"
+fingerprint = ""
+date_format = "2006-01-02"
+with_site_title = true
+title_delimiter = "-"
+hasCJKLanguage = true
+tooltip = true
+
+# Page-level defaults
+capitalize_titles = false
+summary_plainify = false
+author_avatar = true
+twemoji = false
+lightgallery = false
+ruby = true
+fraction = true
+fontawesome = true
+license = "© 2026 sesame. All rights reserved."
+page_style = "normal"
+auto_bookmark = false
+show_lastmod = true
+word_count = true
+reading_time = true
 
 [author]
   name = "sesame"
-  headline = "Software Engineer / Developer"
-  bio = "Software Engineer exploring AI, Container Architecture & Modern Web."
-  links = [
-    { github = "https://github.com/sesame" }
-  ]
-
-enableSearch = true
-enableCodeCopy = true
-enableA11y = false
-enableStructuredBreadcrumbs = true
-
-smartTOC = true
-smartTOCHideUnfocusedChildren = false
+  email = ""
+  link = "https://github.com/sesame"
+  avatar = ""
 
 [header]
-  layout = "fixed-gradient"
+  desktop_mode = "sticky"
+  mobile_mode = "auto"
+  blur = true
+  [header.title]
+    name = "Sesame blog"
+    typeit = false
+    icon = "fa-solid fa-terminal"
+
+[breadcrumb]
+  enable = true
+  sticky = true
+  show_home = true
+  separator = "/"
+  capitalize = false
 
 [footer]
-  showMenu = true
-  showCopyright = true
-  showThemeAttribution = true
-  showAppearanceSwitcher = true
-  showScrollToTop = true
+  enable = true
+  copyright = true
+  author = true
+  since = "2026"
+  [footer.powered]
+    enable = true
+    hugo_logo = false
+    theme_logo = false
 
-[homepage]
-  layout = "profile"
-  showRecent = true
-  showRecentItems = 10
-  showMoreLink = true
-  showMoreLinkDest = "/posts/"
-  cardView = true
+[home]
+  [home.profile]
+    enable = true
+    only_first_page = true
+    title = "Sesame blog"
+    subtitle = "日々の開発・インフラ・ツール検証の技術メモ"
+    typeit = false
+    social = true
+    disclaimer = ""
+  [home.posts]
+    enable = true
+    paginate = 10
+    image_preview = true
 
-[article]
-  showDate = true
-  showDateUpdated = false
-  showAuthor = true
-  showHero = false
-  showBreadcrumbs = true
-  showDraftLabel = true
-  showHeadingAnchors = true
-  showPagination = true
-  showReadingTime = true
-  showTableOfContents = true
-  showTaxonomies = true
-  showCategories = true
-  showTags = true
-  showWordCount = true
-  showZenMode = false
+[social]
+  GitHub = "sesame"
 
-[list]
-  showHero = false
-  showBreadcrumbs = true
-  showSummary = true
-  showTableOfContents = false
-  groupByYear = false
-  cardView = true
+[toc]
+  enable = true
+  keep_static = false
+  auto = true
+  position = "right"
+  ordered = false
+  start_level = 2
+  end_level = 4
+  decrease_h1 = false
 
-[taxonomy]
-  showTermCount = true
-  showTableOfContents = false
+[codeblock]
+  wrapper = true
+  mode = "mac"
+  max_shown_lines = 30
+  shadow = "hover"
+  copyable = true
+  downloadable = false
+  fullscreen = true
+  line_nos_toggler = true
+  line_wrap_toggler = true
 
-[term]
-  showHero = false
-  showBreadcrumbs = true
+[json_viewer]
+  enable = false
+
+[search]
+  enable = true
+  type = "fuse"
+  content_length = 4000
+  placeholder = "記事を検索..."
+  max_result_length = 10
+  snippet_length = 50
+  highlight_tag = "em"
+  absolute_url = false
+  anchorify = true
+
+[search.fuse]
+  is_case_sensitive = false
+  min_match_char_length = 2
+  find_all_matches = false
+  threshold = 0.3
+  distance = 100
+
+[math]
+  enable = false
+
+[mermaid]
+  wrapper = true
+
+[share]
+  enable = false
+  Twitter = false
+  Facebook = false
+  Linkedin = false
+  Line = false
+  Pocket = false
+  HackerNews = false
+  Reddit = false
+
+[post_link]
+  markdown = false
+  source = false
+  edit = false
+  report = false
+
+[library.css]
+  custom = "css/custom.css"
+
+[library.js]
+  custom = "js/custom.js"
+
+[custom_partials]
+  head = ["custom/head.html"]

@@ -1,15 +1,13 @@
+# -- Language Configuration (ja) --
+
 locale = "ja"
 label = "日本語"
 displayName = "日本語"
 weight = 1
 title = "Sesame blog"
-description = "Sesame Tech Blog"
+description = "開発や検証の技術メモ・備忘録"
 copyright = "© 2026 sesame"
 
 [author]
   name = "sesame"
-  headline = "Software Engineer / Developer"
-  bio = "Software Engineer exploring AI, Container Architecture & Modern Web."
-  links = [
-    { github = "https://github.com/sesame" },
-  ]
+  link = "https://github.com/sesame"

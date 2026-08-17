@@ -58,13 +58,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Setup Ruby and Asciidoctor
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-      - name: Install Asciidoctor and Rouge
-        run: |
-          gem install asciidoctor rouge
 
       - name: Install Dart Sass
         run: |
@@ -107,9 +100,9 @@ jobs:
             echo "Initializing Git submodules..."
             git submodule update --init --recursive || true
           fi
-          if [ ! -d "themes/blowfish" ] || [ -z "$(ls -A themes/blowfish 2>/dev/null)" ]; then
-            echo "Cloning Blowfish theme fallback..."
-            git clone --depth 1 https://github.com/nunocoracao/blowfish.git themes/blowfish
+          if [ ! -d "themes/FixIt" ] || [ -z "$(ls -A themes/FixIt 2>/dev/null)" ]; then
+            echo "Cloning FixIt theme fallback..."
+            git clone --depth 1 https://github.com/hugo-fixit/FixIt.git themes/FixIt
           fi
 
       - name: Install Node.js dependencies

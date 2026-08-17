@@ -1,27 +1,60 @@
-# -- Site Configuration --
+# -- Hugo Configuration for FixIt --
 baseURL = 'https://sesame.purplemoon.org/'
 defaultContentLanguage = 'ja'
-theme = 'blowfish'
+locale = 'ja'
+title = 'Sesame blog'
+theme = 'FixIt'
 
 enableRobotsTXT = true
 enableEmoji = true
+hasCJKLanguage = true
 
 [pagination]
   pagerSize = 10
 
 [taxonomies]
-  tag = "tags"
   category = "categories"
-  author = "authors"
-  series = "series"
+  tag = "tags"
+  collection = "collections"
 
 [sitemap]
-  changefreq = 'daily'
+  changefreq = 'weekly'
   filename = 'sitemap.xml'
   priority = 0.5
 
+[outputFormats]
+  [outputFormats.archives]
+    path = "archives"
+    baseName = "index"
+    mediaType = "text/html"
+    isPlainText = false
+    isHTML = true
+    permalinkable = true
+    notAlternative = true
+
+  [outputFormats.offline]
+    path = "offline"
+    baseName = "index"
+    mediaType = "text/html"
+    isPlainText = false
+    isHTML = true
+    permalinkable = true
+    notAlternative = true
+
+  [outputFormats.search]
+    baseName = "search"
+    mediaType = "application/json"
+    rel = "search"
+    isPlainText = true
+    isHTML = false
+    permalinkable = true
+
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML", "RSS", "archives", "search"]
+  page = ["HTML", "markdown"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML"]
+  term = ["HTML", "RSS"]
 
 [security.exec]
-  allow = ['^(dart-)?sass(-embedded)?$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$', '^asciidoctor$']
+  allow = ['^(dart-)?sass(-embedded)?$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$']

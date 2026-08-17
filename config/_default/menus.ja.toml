@@ -1,14 +1,33 @@
+# -- Navigation Menus --
+
 [[main]]
+  identifier = "posts"
   name = "Blog"
-  pageRef = "posts"
+  url = "/posts/"
   weight = 10
+  [main.params]
+    icon = "fa-solid fa-file-lines"
 
 [[main]]
-  name = "Tags"
-  pageRef = "tags"
+  identifier = "archives"
+  name = "Archives"
+  url = "/archives/"
   weight = 20
+  [main.params]
+    icon = "fa-solid fa-archive"
 
 [[main]]
+  identifier = "categories"
   name = "Categories"
-  pageRef = "categories"
+  url = "/categories/"
   weight = 30
+  [main.params]
+    icon = "fa-solid fa-folder-tree"
+
+[[main]]
+  identifier = "tags"
+  name = "Tags"
+  url = "/tags/"
+  weight = 40
+  [main.params]
+    icon = "fa-solid fa-tags"
