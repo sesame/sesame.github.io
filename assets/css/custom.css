@@ -191,7 +191,7 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
    ============================================================================== */
 
 .admonitionblock {
-  margin: 2.5rem 0 !important;
+  margin: 2rem 0 !important;
   width: 100% !important;
   border-radius: 0.6rem !important;
   overflow: hidden !important;
@@ -203,7 +203,6 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   border: none !important;
   background: transparent !important;
   width: 100% !important;
-  table-layout: fixed !important;
   margin: 0 !important;
   padding: 0 !important;
 }
@@ -218,7 +217,7 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 .admonitionblock > table > tbody > tr > td,
 .admonitionblock > table > tr > td {
   border: none !important;
-  padding: 1.4rem 1.6rem !important;
+  padding: 1.2rem 1.4rem !important;
   vertical-align: top !important;
   background: transparent !important;
 }
@@ -226,12 +225,12 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 .admonitionblock > table > tbody > tr > td.icon,
 .admonitionblock > table > tr > td.icon {
   text-align: center !important;
-  width: 4.8rem !important;
-  min-width: 4.8rem !important;
-  max-width: 4.8rem !important;
-  font-size: 2.2rem !important;
+  width: 3.6rem !important;
+  min-width: 3.6rem !important;
+  max-width: 3.6rem !important;
+  font-size: 2rem !important;
   padding-right: 0 !important;
-  padding-top: 1.4rem !important;
+  padding-top: 1.2rem !important;
   vertical-align: top !important;
 }
 
@@ -241,7 +240,7 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   font-weight: 900 !important;
   font-style: normal !important;
   display: inline-block !important;
-  line-height: 1.2 !important;
+  line-height: 1 !important;
 }
 
 .admonitionblock > table > tbody > tr > td.icon i.icon-note::before,
@@ -276,28 +275,27 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 
 .admonitionblock > table > tbody > tr > td.content,
 .admonitionblock > table > tr > td.content {
-  font-size: 1.55rem !important;
+  font-size: 1.5rem !important;
   line-height: 1.7 !important;
   color: #24292f !important;
   text-align: left !important;
   white-space: normal !important;
-  overflow-x: auto !important;
   vertical-align: top !important;
   padding-left: 0.8rem !important;
 }
 
 .admonitionblock > table > tbody > tr > td.content > .title,
 .admonitionblock > table > tr > td.content > .title {
-  font-weight: 700;
-  margin-bottom: 0.8rem;
-  font-size: 1.65rem;
-  color: inherit;
+  font-weight: 700 !important;
+  margin-bottom: 0.6rem !important;
+  font-size: 1.55rem !important;
+  color: inherit !important;
 }
 
 .admonitionblock > table > tbody > tr > td.content p,
 .admonitionblock > table > tr > td.content p {
-  margin: 0.6rem 0 !important;
-  line-height: inherit !important;
+  margin: 0.4rem 0 !important;
+  line-height: 1.7 !important;
 }
 
 .admonitionblock > table > tbody > tr > td.content p:first-child,
@@ -308,29 +306,6 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
 .admonitionblock > table > tbody > tr > td.content p:last-child,
 .admonitionblock > table > tr > td.content p:last-child {
   margin-bottom: 0 !important;
-}
-
-/* Inner Data Tables within Admonition Block */
-.admonitionblock .content table.tableblock {
-  margin: 1.4rem 0 !important;
-  font-size: 1.4rem !important;
-  width: 100% !important;
-  border-collapse: collapse !important;
-  background-color: #ffffff !important;
-}
-
-.admonitionblock .content table.tableblock th,
-.admonitionblock .content table.tableblock td {
-  padding: 0.8rem 1.2rem !important;
-  font-size: 1.4rem !important;
-  vertical-align: middle !important;
-}
-
-.admonitionblock .content table.tableblock caption.title {
-  font-size: 1.35rem;
-  font-weight: 600;
-  text-align: left;
-  margin-bottom: 0.4rem;
 }
 
 /* Admonition Box Themes (Light) */
@@ -380,19 +355,6 @@ body.colorscheme-dark .content article > table tr:nth-child(even) {
   body.colorscheme-auto .admonitionblock.important {
     background-color: rgba(220, 38, 38, 0.15) !important;
   }
-  body.colorscheme-auto .admonitionblock .content table.tableblock {
-    background-color: #0d1117 !important;
-    border-color: #30363d !important;
-  }
-  body.colorscheme-auto .admonitionblock .content table.tableblock th {
-    background-color: #161b22 !important;
-    color: #e6edf3 !important;
-    border-color: #30363d !important;
-  }
-  body.colorscheme-auto .admonitionblock .content table.tableblock td {
-    color: #c9d1d9 !important;
-    border-color: #30363d !important;
-  }
 }
 
 body.colorscheme-dark .admonitionblock > table > tbody > tr > td.content,
@@ -413,19 +375,6 @@ body.colorscheme-dark .admonitionblock.caution {
 }
 body.colorscheme-dark .admonitionblock.important {
   background-color: rgba(220, 38, 38, 0.15) !important;
-}
-body.colorscheme-dark .admonitionblock .content table.tableblock {
-  background-color: #0d1117 !important;
-  border-color: #30363d !important;
-}
-body.colorscheme-dark .admonitionblock .content table.tableblock th {
-  background-color: #161b22 !important;
-  color: #e6edf3 !important;
-  border-color: #30363d !important;
-}
-body.colorscheme-dark .admonitionblock .content table.tableblock td {
-  color: #c9d1d9 !important;
-  border-color: #30363d !important;
 }
 
 /* Brand Icons fallback for Font Awesome 6 */
