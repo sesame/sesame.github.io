@@ -3,6 +3,15 @@
 colorScheme = "blowfish"
 defaultAppearance = "light"
 autoSwitchAppearance = true
+keywords = ["blog", "developer", "ai", "tech"]
+
+[author]
+  name = "sesame"
+  headline = "Software Engineer / Developer"
+  bio = "Software Engineer exploring AI, Container Architecture & Modern Web."
+  links = [
+    { github = "https://github.com/sesame" }
+  ]
 
 enableSearch = true
 enableCodeCopy = true
