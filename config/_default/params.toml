@@ -1,6 +1,6 @@
 # -- Blowfish Theme Configuration --
 
-colorScheme = "github"
+colorScheme = "blowfish"
 defaultAppearance = "light"
 autoSwitchAppearance = true
 keywords = ["blog", "developer", "ai", "tech"]
