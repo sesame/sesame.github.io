@@ -105,7 +105,11 @@ jobs:
         run: |
           if [[ -f .gitmodules ]]; then
             echo "Initializing Git submodules..."
-            git submodule update --init --recursive
+            git submodule update --init --recursive || true
+          fi
+          if [ ! -d "themes/blowfish" ] || [ -z "$(ls -A themes/blowfish 2>/dev/null)" ]; then
+            echo "Cloning Blowfish theme fallback..."
+            git clone --depth 1 https://github.com/nunocoracao/blowfish.git themes/blowfish
           fi
 
       - name: Install Node.js dependencies
