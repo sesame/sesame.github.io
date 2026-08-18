@@ -58,7 +58,7 @@ LLM のコンテキストウィンドウの外側（リポジトリ内の Markdo
 
 ループエンジニアリングの真髄は、これまで人間が頭を使い、目視で行っていた **「確認・合否判定・やり直し指示（フィードバック）」を、可能な限り AI と判定ロジックの仕組みに委ねること** にあります。
 
-製品やツールの垣根を越えて、自律ループを破綻させずに回し続けるためには、以下の 3 つの本質的な足場が不可欠です。
+ただし、AI に自律的な行動を委ねるには、大前提として **「ハーネス（Harness）」** ── すなわち Docker コンテナや Git ブランチ分離等による **影響の隔離（Sandboxing）と可逆性（Reversibility）を保証する安全な実行環境** ── が整備されている必要があります。このハーネスという土台の上で、以下の 3 つの本質的な足場が不可欠です。
 
 ![ループエンジニアリングの 3 大核心要件](three-core-pillars.jpg)
 
@@ -131,6 +131,8 @@ LLM のコンテキストウィンドウの外側（リポジトリ内の Markdo
 ### 2. 人間の介入待ちを排除した自律走行（ノンブロッキング権限）
 
 **Automations（ゴール駆動実行や定期監視）** によってエージェントを自走させる際、コマンドを実行するたびに対話型の承認プロンプト（Confirmation）を挟むと、自律ループがブロックされて人間が再び作業のボトルネックになります。
+
+たとえば、AI がコードを修正した後に `hugo --cleanDestinationDir` で検証しようとするたびに「このコマンドを実行してよいですか？ [y/N]」と聞かれる状況を想像してみてください。人間が承認ボタンを押すまで AI は完全に停止し、自己修復ループは事実上崩壊します。
 
 日常的に使用するテスト・ビルド・Git コマンドを事前許可し、**「人間の確認待ちによるループ停止」を排除** して AI を止まらずに自走させます。
 
@@ -302,7 +304,7 @@ AI が「目の前のテストを通すこと」だけに集中するあまり�
 ### ループ工学・エージェント設計
 - [Addy Osmani: Loop Engineering (2026-06-07)](https://addyosmani.com/blog/loop-engineering/)
 - [Acquired Unplugged (WorkOS): Boris Cherny on Claude Code and Agent Loops (2026-06-02)](https://www.youtube.com/watch?v=RkQQ7WEor7w)
-- [Peter Steinberger (@steipete): Discussions on Coding Agent Loops and Harnesses](https://x.com/steipete)
+- [Peter Steinberger: "Give the AI a Sandbox, Not a Prompt" - Harness Engineering の実践知見](https://steipete.me/)
 
 ---
 
