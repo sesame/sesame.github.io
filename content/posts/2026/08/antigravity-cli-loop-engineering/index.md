@@ -62,38 +62,6 @@ LLM のコンテキストウィンドウの外側（リポジトリ内の Markdo
 
 ![ループエンジニアリングの 3 大核心要件](three-core-pillars.jpg)
 
-### 自律ループの時間軸：Inner Loop と Outer Loop
-
-自律ループには、**「秒〜分単位で回るコードの自己修復（Inner Loop）」** と、**「タスク・週単位で回る知見の蓄積と棚卸し（Outer Loop）」** という 2 つの異なる時間軸が存在します。
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Developer as 開発者
-    participant Agent as AIエージェント
-    participant Test as 検証機 (Fast Observability)
-    participant Memory as 外部記憶 (Learnings.md)
-
-    Note over Developer,Agent: 【Outer Loop 開始】目標の指示
-    Developer->>Agent: ゴールを指示（例: /plan）
-    
-    rect rgb(20, 30, 45)
-        Note over Agent,Test: 【Inner Loop: 秒・分単位の高速サイクル】
-        loop テストが合格するまで自律試行
-            Agent->>Agent: コード編集・推敲
-            Agent->>Test: 検証実行 (hugo --cleanDestinationDir)
-            Test-->>Agent: Exit Code 1 + stderr (エラーログ)
-            Agent->>Agent: エラーログから原因特定・自己修正
-        end
-        Agent->>Test: 再検証実行
-        Test-->>Agent: Exit Code 0 (合格)
-    end
-
-    Note over Agent,Memory: 【Outer Loop 完了】知見の永続化
-    Agent->>Memory: 確定した回避策やユーザー指摘を要約追記
-    Agent->>Developer: タスク完走・コミット完了を報告
-```
-
 ### 1. フィードバックの永続化と自己進化（外部記憶）
 
 エージェントのコンテキスト肥大化を防ぎつつ、過去の失敗やプロジェクト固有ノウハウを引き継ぐため、外部記憶を **「常時ロード層」** と **「オンデマンド参照・自己進化層」** の 2 つに分離します。
