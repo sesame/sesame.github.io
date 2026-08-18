@@ -62,6 +62,38 @@ LLM のコンテキストウィンドウの外側（リポジトリ内の Markdo
 
 ![ループエンジニアリングの 3 大核心要件](three-core-pillars.jpg)
 
+### 自律ループの時間軸：Inner Loop と Outer Loop
+
+自律ループには、**「秒〜分単位で回るコードの自己修復（Inner Loop）」** と、**「タスク・週単位で回る知見の蓄積と棚卸し（Outer Loop）」** という 2 つの異なる時間軸が存在します。
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Developer as 開発者
+    participant Agent as AIエージェント
+    participant Test as 検証機 (Fast Observability)
+    participant Memory as 外部記憶 (Learnings.md)
+
+    Note over Developer,Agent: 【Outer Loop 開始】目標の指示
+    Developer->>Agent: ゴールを指示（例: /plan）
+    
+    rect rgb(20, 30, 45)
+        Note over Agent,Test: 【Inner Loop: 秒・分単位の高速サイクル】
+        loop テストが合格するまで自律試行
+            Agent->>Agent: コード編集・推敲
+            Agent->>Test: 検証実行 (hugo --cleanDestinationDir)
+            Test-->>Agent: Exit Code 1 + stderr (エラーログ)
+            Agent->>Agent: エラーログから原因特定・自己修正
+        end
+        Agent->>Test: 再検証実行
+        Test-->>Agent: Exit Code 0 (合格)
+    end
+
+    Note over Agent,Memory: 【Outer Loop 完了】知見の永続化
+    Agent->>Memory: 確定した回避策やユーザー指摘を要約追記
+    Agent->>Developer: タスク完走・コミット完了を報告
+```
+
 ### 1. フィードバックの永続化と自己進化（外部記憶）
 
 エージェントのコンテキスト肥大化を防ぎつつ、過去の失敗やプロジェクト固有ノウハウを引き継ぐため、外部記憶を **「常時ロード層」** と **「オンデマンド参照・自己進化層」** の 2 つに分離します。
@@ -232,7 +264,52 @@ hugo --cleanDestinationDir
 - **レビュー分掌（Sub-agents による Maker / Checker 分離）**:
   コードを実装する「Maker エージェント」と、テスト・レビューを担当する「Checker サブエージェント」を `invoke_subagent` で分担させ、客観的な二重判定ループを自律実行させます。
 
+### 他のエージェントツールへの普遍的応用
+
+本記事で解説した 3 大核心要件（2 層外部記憶・ノンブロッキング自走・客観的自動検証）は、Antigravity CLI に限らず、Claude Code や Cursor などの主要なコーディングエージェント環境にもそのまま応用できる普遍的な設計パターンです。
+
+| 核心要件・設計要素 | Antigravity CLI | Claude Code | Cursor |
+| :--- | :--- | :--- | :--- |
+| **常時ロード層** | `AGENTS.md` | `CLAUDE.md` | `.cursor/rules/*.mdc` |
+| **オンデマンド外部記憶** | `Learnings.md` | `Learnings.md` | `Learnings.md` / Notepads |
+| **自走コマンド** | `/plan`, `/schedule` | `claude -p` / `--dangerously-skip-permissions` | Agent Mode（Yolo モード） |
+| **高速自動検証** | ターミナルコマンド | ターミナルコマンド | Terminal Tool / Task Runner |
+
 ---
+
+## ループが破綻する 3 つのアンチパターンと処方箋
+
+実務で自律ループを導入しようとして失敗する典型的な落とし穴と、その回避策（処方箋）をまとめます。
+
+### 1. 検証が遅すぎる（Slow Feedback Trap）
+- **落とし穴**: テストやビルドに 1 分以上かかると、エージェントの自己修正ループが鈍化し、試行回数が稼げずにトークンと時間だけが浪費されます。
+- **処方箋**: 重厚な E2E テストではなく、**5 秒以内で完了する単体テスト・構文チェック・クリーンビルド（`--cleanDestinationDir`）** を一次判定機としてエージェントに渡します。
+
+### 2. 曖昧な成否判定（False Positive Trap）
+- **落とし穴**: 内部でエラーが発生しているのに終了コード（Exit Code 0）を返してしまうスクリプトや、過去のビルドキャッシュが残っていると、AI は「成功した」と誤認して壊れた状態で作業を終了します。
+- **処方箋**: 出力先をゼロクリアし、**異常時は必ず非ゼロ（Exit Code 1）と明確なエラーログ（stderr）を出力する厳格な判定ロジック** を徹底します。
+
+### 3. 外部記憶の放置と肥大化（Knowledge Rot Trap）
+- **落とし穴**: `Learnings.md` に追記しっぱなしで数ヶ月放置すると、重複した知見や過去の古いバージョンの一時的な回避策が残り続け、エージェントを惑わせるノイズになります。
+- **処方箋**: `AGENTS.md` に**週次（またはサイズ閾値）の自律リファクタリングルール**を仕込み、エージェント自身に定期的な棚卸しを行わせます。
+
+---
+
+## まとめ：人間と AI の新しい責任分界点
+
+プロンプトエンジニアリングの時代からループエンジニアリングの時代へと移行したことで、開発者に求められる役割は根本から変わりました。
+
+> [!NOTE]
+> **開発者の役割のパラダイムシフト**
+> - **これまでの仕事（作業者・チェック係）**:
+>   「AI にどう上手に指示を出すか」「AI の出力を人間がどう目視確認して直すか」
+> - **これからの仕事（アーキテクト）**:
+>   **「AI が自由に暴れても壊れない安全なハーネス（隔離環境）を作り、AI が自力で合否を判定できる客観的な判定ロジック（テスト）を設計すること」**
+
+プロンプトの細かな言い回しに悩む時間を減らし、エージェントが自律して試行錯誤できる「外部記憶・自走環境・判定ロジック」という足場の設計に投資することこそが、これからの AI 駆動開発における最も本質的なエンジニアリングです。
+
+---
+
 ## 参考リンク・情報ソース
 
 ### 学術論文（自律エージェント・外部記憶・コンテキスト特性）
