@@ -2,7 +2,7 @@
 date: '2026-08-17T02:40:00Z'
 draft: false
 title: 'Antigravity CLI で実践する自律実行ループ設計（ループエンジニアリング）'
-description: 'AIコーディングエージェントを自律走行させるための環境設計論。なぜループが必要なのか、その本質とAddy Osmani氏の5要素モデル、Learnings.mdによる2層メモリ構造、Dev Containersを用いた5ステップ完全実践ハンズオンガイド。'
+description: 'AIコーディングエージェントを自律走行させるための環境設計論。なぜループが必要なのか、その本質とAddy Osmani氏の5+1要素モデル、フィードバックを永続化する2層外部記憶（AGENTS.md + Learnings.md）、Antigravity CLIによる3大核心要件の実践ガイド。'
 tags: ["antigravity", "agent", "loop-engineering", "harness-engineering", "ai", "cli", "learnings", "devcontainers"]
 categories: ["Tech", "AI Development"]
 ---
