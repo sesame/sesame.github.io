@@ -297,17 +297,14 @@ AI が「目の前のテストを通すこと」だけに集中するあまり�
 
 ## 参考リンク・情報ソース
 
-### 学術論文（自律エージェント・外部記憶・コンテキスト特性）
+### ループ工学・エージェント設計
+- [Addy Osmani: Loop Engineering (2026-06-07)](https://addyosmani.com/blog/loop-engineering/)
+- [WorkOS (Acquired Unplugged): Boris Cherny on Claude Code and Agent Loops (2026-06-02)](https://www.youtube.com/watch?v=RkQQ7WEor7w)
+
+### 学術論文（外部記憶・コンテキスト特性）
 - [Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023 / TACL 2024)](https://arxiv.org/abs/2307.03172)
 - [Reflexion: Language Agents with Verbal Reinforcement Learning (Shinn et al., 2023 / NeurIPS 2023)](https://arxiv.org/abs/2303.11366)
 - [Voyager: An Open-Ended Embodied Agent with Large Language Models (Wang et al., 2023)](https://arxiv.org/abs/2305.16291)
-- [Voyager Project Page (MineDojo / Stanford / NVIDIA)](https://voyager.minedojo.org/)
-
-
-### ループ工学・エージェント設計
-- [Addy Osmani: Loop Engineering (2026-06-07)](https://addyosmani.com/blog/loop-engineering/)
-- [Acquired Unplugged (WorkOS): Boris Cherny on Claude Code and Agent Loops (2026-06-02)](https://www.youtube.com/watch?v=RkQQ7WEor7w)
-- [Peter Steinberger: "Give the AI a Sandbox, Not a Prompt" - Harness Engineering の実践知見](https://steipete.me/)
 
 ---
 
