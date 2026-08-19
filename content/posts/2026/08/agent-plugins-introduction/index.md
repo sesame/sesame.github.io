@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T10:40:00Z'
-draft: false
+draft: true
 title: 'Antigravity の Agent Plugins によるルール・スキル・MCP のパッケージ化'
 description: 'Google Antigravity（AGY）で Skills、Rules、MCP サーバーを 1 つのディレクトリにまとめて管理・共有できる Agent Plugins のディレクトリ構造と設定方法のメモ。'
 tags: ["antigravity", "agent", "plugins", "ai", "mcp"]

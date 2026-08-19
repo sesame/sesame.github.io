@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T11:25:00Z'
-draft: false
+draft: true
 title: 'Dev Containers による開発環境のコード化と Hugo + AIエージェント構成例'
 description: 'VS Code の Dev Containers を使ってチーム共通の開発環境をコード化する手順。devcontainer.json の書き方と、Hugo + Antigravity CLI を動かす構成例メモ。'
 tags: ["docker", "devcontainers", "vscode", "hugo", "environment"]

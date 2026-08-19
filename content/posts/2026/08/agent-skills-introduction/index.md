@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T11:32:00Z'
-draft: false
+draft: true
 title: 'Agent Skills の仕様と書き方メモ：手順書（Runbook）のオンデマンド読み込み'
 description: 'AIエージェントにプロジェクト固有の運用手順やワークフローを実行させる「Agent Skills（SKILL.md）」の仕様、Progressive Disclosureの仕組み、作成時の注意点まとめ。'
 tags: ["antigravity", "agent", "skills", "ai", "runbook"]

@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T11:45:00Z'
-draft: false
+draft: true
 title: 'ローカル開発環境をコンテナ化して得られたメリット'
 description: '言語ランタイムやツールのバージョン管理でホストPCを汚さないためのコンテナ開発（Dev Containers）運用の所感とメリットまとめ。'
 tags: ["docker", "devcontainers", "productivity", "architecture", "dx"]

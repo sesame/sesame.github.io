@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T11:28:00Z'
-draft: false
+draft: true
 title: 'Hugo で Asciidoctor をコンテナ連携させて動かす構成メモ'
 description: 'Hugo で AsciiDoc を使う際、メインの開発環境に Ruby や Gem を直接インストールせず、Docker コンテナ + CLI ラッパーで透過的に呼び出す構成の実装手順とメモ。'
 tags: ["hugo", "asciidoc", "asciidoctor", "docker", "devcontainers", "ruby"]

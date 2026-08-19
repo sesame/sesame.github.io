@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T11:46:00Z'
-draft: false
+draft: true
 title: 'MITRE ATT&CK の基本構造と防御視点での活用メモ'
 description: 'サイバー攻撃者の行動パターンを体系化したナレッジベース「MITRE ATT&CK」のTTPs階層構造、ドメイン、DeTT&CTやD3FENDなど周辺ツールを活用した検知設計の整理。'
 tags: ["security", "mitre", "attck", "threat-intelligence", "dettect", "d3fend"]

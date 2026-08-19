@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T11:20:00Z'
-draft: false
+draft: true
 title: 'Model Context Protocol（MCP）の仕組みと設定方法メモ'
 description: 'AIエージェントと外部ツールを接続するオープン標準「Model Context Protocol（MCP）」の仕組み、Tools/Resources/Promptsの構造、Antigravityでの設定とTypeScriptでの自作サーバー実装メモ。'
 tags: ["mcp", "ai", "agent", "antigravity", "architecture"]

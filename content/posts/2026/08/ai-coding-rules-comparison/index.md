@@ -1,6 +1,6 @@
 ---
 date: '2026-08-16T11:35:00Z'
-draft: false
+draft: true
 title: 'Copilot・Cursor・Antigravity のカスタム指示ファイル設定まとめ'
 description: 'GitHub Copilot（copilot-instructions.md）、Cursor（.cursorrules / .mdc）、Antigravity（AGENTS.md）のルール設定仕様の違いと、実用的な書き方の整理。'
 tags: ["copilot", "github", "cursor", "antigravity", "ai", "rules"]
