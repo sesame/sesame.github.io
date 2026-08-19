@@ -1,6 +1,6 @@
 ---
-date: '2026-08-16T10:40:00Z'
-draft: true
+date: '2026-08-19T22:45:00Z'
+draft: false
 title: 'Agent Plugins の歴史とオープン標準化：Skills・MCP を統合する共通プラグイン規格'
 description: '2026年8月に発表されたオープン標準「Agent Plugins 1.0.0」の誕生背景と仕組み。OpenAI、Google、Microsoft、Cursor、Vercel、AWS が共同策定したベンダー中立な相互運用規格の全容と、Skills（手順書）と MCP（外部ツール接続）を統合する実践ガイド。'
 tags: ["antigravity", "agent", "plugins", "skills", "mcp", "ai", "standards", "architecture"]
