@@ -1,6 +1,7 @@
 [alert]
 note = "NOTE"
 tip = "TIP"
+info = "INFO"
 important = "IMPORTANT"
 warning = "WARNING"
 caution = "CAUTION"
