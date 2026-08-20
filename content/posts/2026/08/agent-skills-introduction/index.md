@@ -1,82 +1,169 @@
 ---
-date: '2026-08-16T11:32:00Z'
-draft: true
-title: 'Agent Skills の仕様と書き方メモ：手順書（Runbook）のオンデマンド読み込み'
-description: 'AIエージェントにプロジェクト固有の運用手順やワークフローを実行させる「Agent Skills（SKILL.md）」の仕様、Progressive Disclosureの仕組み、作成時の注意点まとめ。'
-tags: ["antigravity", "agent", "skills", "ai", "runbook"]
+date: '2026-08-19T23:30:00Z'
+draft: false
+title: 'Agent Skills（agentskills.io）の仕様と設計：手順書の段階的開示とディレクトリ標準'
+description: 'オープン標準規格「Agent Skills（agentskills.io）」の仕様解説。SKILL.md のフロントマター定義、references/ や scripts/ を用いた段階的開示（Progressive Disclosure）の仕組み、トークン節約と高精度なタスク実行を実現する設計ベストプラクティス。'
+tags: ["agentskills", "agent", "skills", "ai", "standards", "runbook", "antigravity"]
 categories: ["Tech", "AI Development"]
 ---
 
-AIエージェントに特定の定型作業（デプロイ手順、DBマイグレーション、リリース手順など）を任せたい場合、すべての手順を `AGENTS.md` などのルールファイルに書くとコンテキスト（トークン）を圧迫してしまいます。
+## はじめに
 
-そこで使われるのが **Agent Skills** の仕組みです。作業手順書（Runbook）を独立したファイルとして切り出し、必要なタスクが発生したときだけオンデマンドで読み込ませることができます。
+AI コーディングエージェントにデプロイ手順、データベースのマイグレーション、障害調査などの複雑な定型タスクを任せる際、すべての手順を `AGENTS.md` などのルールファイルに記述すると、プロンプトが肥大化して **Context Bloat（トークン消費の増大）** や **Attention Dilution（指示の見落とし）** が発生します。
 
----
+この問題を解決し、専門知識や運用手順（Runbook）をポータブルに管理・実行するために策定されたオープン標準規格が **Agent Skills（[agentskills.io](https://agentskills.io)）** です。
 
-## Rules と Skills の使い分け
-
-| 項目 | Rules (`AGENTS.md`) | Skills (`SKILL.md`) |
-| :--- | :--- | :--- |
-| **役割** | 常に守るべきコーディング規約・制約 | 特定タスクの実行手順書（Runbook） |
-| **読み込み** | 毎ターン常にコンテキストへ注入 | 該当タスク発生時のみ読み込み |
-| **用途例** | 命名規則、型安全方針、禁止事項 | デプロイ手順、障害調査フロー、マイグレーション手順 |
+本記事では、`agentskills.io` の公式仕様、中核となる **段階的開示（Progressive Disclosure）** の仕組み、`references/` や `scripts/` を含む標準ディレクトリ構造、そして高精度なスキルを作成するための設計原則を解説します。
 
 ---
 
-## 段階的開示（Progressive Disclosure）の仕組み
+## 段階的開示（Progressive Disclosure）のアーキテクチャ
 
-Skillsは以下の3段階で読み込まれます。
+Agent Skills の最大の特徴は、**「必要な情報だけを、必要なタイミングで読み込む」** という 3 段階のライフサイクル設計にあります。
 
-1. **初期状態（メタデータのみ）**
-   エージェントの初期コンテキストには、スキルの `name` と `description` のみが入ります。
-2. **発動時（手順書の読み込み）**
-   ユーザーの指示が `description` と合致したとき、エージェントが自律的に `SKILL.md` の本文を読み込みます。
-3. **詳細参照（必要に応じて）**
-   さらに詳しいドキュメントや補助スクリプトが必要な場合、`references/` や `scripts/` を参照・実行します。
-   
-これにより、手順書が何十個あっても初期プロンプトを消費せずに済みます。
-
----
-
-## ディレクトリ構成と `SKILL.md` の書き方
-
-スキルは `.agents/skills/<skill_name>/` 配下に配置します。
-
-```text
-.agents/skills/db-migration/
-├── SKILL.md          # 手順書本体（必須）
-├── scripts/          # 補助スクリプト（任意）
-└── references/       # 仕様書・参照資料（任意）
+```mermaid
+flowchart TD
+    Phase1["1. 探索フェーズ（Discovery）<br>起動時：name と description のみ読み込み<br>（30〜100 トークン / スキル）"]
+    -->|"ユーザーの指示が合致"| Phase2["2. 発動フェーズ（Triggering）<br>タスク発生時：SKILL.md 本文（手順書）を展開"]
+    -->|"詳細仕様や自動化が必要"| Phase3["3. 実行フェーズ（Execution）<br>オンデマンド：scripts/ 実行、references/ 参照"]
 ```
 
-### `SKILL.md` の記述例
+### 1. 探索フェーズ（Discovery Phase）
+エージェント起動時、インストールされている全スキルの `SKILL.md` から **YAML フロントマター（`name` と `description`）のみ** をインデックスとしてメモリに読み込みます。
+1 スキルあたりわずか 30〜100 トークン程度しか消費しないため、数十〜数百個のスキルが存在してもコンテキスト上限を圧迫しません。
 
-先頭に YAML フロントマターで `name` と `description` を記述します。
+### 2. 発動フェーズ（Triggering Phase）
+ユーザーのプロンプトを評価し、「このタスクにはあのスキルが必要だ」とエージェントが判断した瞬間に、該当する `SKILL.md` の **本文（Markdown 手順書）** をコンテキストに展開します。
+
+### 3. 実行フェーズ（Execution Phase）
+スキルの手順書に従って作業を進める中で、追加のドキュメントが必要になった場合は `references/` をピンポイントで参照し、自動化スクリプトが必要な場合は `scripts/` を実行します。
+
+---
+
+## Agent Skills の標準ディレクトリ構造
+
+`agentskills.io` 仕様では、1 つのスキルを独立したフォルダとして構成します。
+
+```text
+my-specialized-skill/
+├── SKILL.md          # 【必須 (Required)】メタデータ ＋ メイン手順書
+├── scripts/          # 【任意 (Optional)】実行スクリプト（Python, Bash 等）
+├── references/       # 【任意 (Optional)】詳細仕様書・スキーマ・参照資料
+├── assets/           # 【任意 (Optional)】テンプレート・画像等の静的ファイル
+└── evals/            # 【任意 (Optional)】スキルの動作検証用テストシナリオ
+```
+
+### 各サブディレクトリの役割
+
+#### `SKILL.md`（必須）
+スキルのエントリポイントです。YAML フロントマターと Markdown 本文で構成され、作業の大まかな流れや判断基準を記述します。
+
+#### `references/`（任意：参照ドキュメント）
+`SKILL.md` にすべて書ききれない **詳細な API 仕様書、エラーコード対応表、データスキーマ定義** などを格納します。
+- **メリット**: `SKILL.md` 自体をスリムに保ち、エージェントが「特定のエラーが発生したとき」「特定パラメータを調べるとき」だけ該当ファイルを読めるようにします。
+- **記述例**: `SKILL.md` 内に `[エラー一覧](references/error_codes.md)` のように相対パスでリンクを記載します。
+
+#### `scripts/`（任意：実行コード）
+エージェントがシェルから直接実行できるスクリプト（Bash, Python, Node.js 等）を配置します。
+- **メリット**: AI に複雑なワンライナーをアドホックに生成させるのではなく、テスト済みの決定論的なコードを実行させることで作業の再現性と安全性を担保します。
+
+#### `assets/`（任意：静的アセット）
+テンプレートファイル、設定の雛形、画像データなどを配置します。
+
+#### `evals/`（任意：評価テスト）
+スキルが想定通りに動作するかを検証するためのプロンプト例やテストケースを定義します。
+
+---
+
+## `SKILL.md` の仕様と記述例
+
+### 1. YAML フロントマターの仕様
+
+`SKILL.md` の先頭には、探索フェーズで使われるメタデータを YAML 形式で定義します。
+
+| フィールド | 必須 / 任意 | 型 | 説明 |
+| :--- | :--- | :--- | :--- |
+| **`name`** | **必須** | `string` | スキルの一意な識別子（1〜64文字、小文字英数字・ハイフン） |
+| **`description`** | **必須** | `string` | スキルの役割と **発動条件（トリガー）** を自然言語で記載（最大 1024 文字） |
+| `license` | 任意 | `string` | ライセンス情報（MIT, Apache-2.0 等） |
+| `compatibility` | 任意 | `string` | 動作要件や前提環境（例: `Linux/macOS with Docker`） |
+| `metadata` | 任意 | `object` | 任意のカスタムキーバリューストア |
+
+> [!IMPORTANT]
+> **`description` はトリガーの精度を左右する**
+> エージェントは `description` を読んでスキルの使用可否を判断します。「何をするか」だけでなく、「どんな状況・指示のときに使うべきか（Use this skill when...）」を明確に記述することが極めて重要です。
+
+### 2. `SKILL.md` の実践例
 
 ```markdown
 ---
 name: db-migration
-description: データベースの新規マイグレーション作成、適用、および整合性チェックを行う際に使用する。
+description: データベースのマイグレーション作成、適用、ロールバック、整合性確認を行う際に使用する。
+compatibility: Linux / macOS, Docker 環境必須
 ---
 
 # Database Migration Procedure
 
 ## 前提条件
-- Docker コンテナでローカル DB が起動していること。
+- ローカルの PostgreSQL コンテナが起動していること。
+- 詳細なテーブル定義は [スキーマ仕様](references/schema.md) を参照。
 
 ## 実行手順
-1. `./scripts/validate.sh` を実行して接続を確認する。
-2. `npm run migrate:up` を実行する。
-3. `npm run test:db` で整合性を確認する。
-4. エラーが発生した場合は `npm run migrate:down` でロールバックする。
-```
 
-`description` はエージェントが「このスキルを使うべきか」を判定するトリガーになるため、「何をするか」「いつ使うか」を具体的に書くのが重要です。
+1. **接続と状態確認**:
+   ```bash
+   ./scripts/check_connection.sh
+   ```
+2. **マイグレーションの適用**:
+   ```bash
+   npm run migrate:up
+   ```
+3. **整合性検証**:
+   - 適用後、以下のテストを実行してエラーが出ないことを確認する。
+   ```bash
+   npm run test:db
+   ```
+4. **ロールバック手順（エラー発生時）**:
+   - テストが失敗した場合は直ちにロールバックを実行する。
+   ```bash
+   npm run migrate:down
+   ```
+   - 失敗時のエラーコード詳細は [トラブルシューティング](references/troubleshooting.md) を参照。
+```
 
 ---
 
-## 書くときのポイント
+## Rules（`AGENTS.md`）と Skills の使い分け
 
-- **汎用的な知識は書かない**: 一般的な Git コマンドの使い方などは省き、プロジェクト固有のコマンドやディレクトリ構造に絞る。
-- **検証ステップを入れる**: コマンド実行後に「正常終了したか」「エラーログが出ていないか」を確認する手順を明記しておくと、エージェントが自律的に成否を判断しやすい。
-- **長いスクリプトは分離する**: 長いワンライナーをプロンプトで組み立てさせるより、`scripts/` にシェルスクリプトを置いてそれを実行させる方が安定する。
+プロジェクトを効率的に管理するための、Rules と Skills の明確な役割分担です。
+
+| 項目 | Rules (`AGENTS.md`) | Skills (`SKILL.md`) |
+| :--- | :--- | :--- |
+| **位置づけ** | プロジェクトの **「基本方針・憲法」** | 特定タスクの **「業務マニュアル」** |
+| **読み込みタイミング** | 毎ターン常にシステムプロンプトへ注入 | 該当するタスクの発生時のみオンデマンド展開 |
+| **内容の性質** | コーディング規約、禁止事項、ディレクトリ構成 | 手順、スクリプト実行、詳細仕様の参照 |
+| **トークン消費** | 常時消費（軽量に保つ必要がある） | 使用時のみ消費（タスク終了後は解放可能） |
+
+---
+
+## Agent Plugins との関係性
+
+**Agent Skills** と **Agent Plugins（1.0.0 共通規格）** は競合するものではなく、**包含関係** にあります。
+
+- **Agent Skills（[agentskills.io](https://agentskills.io)）**:
+  - 「1 つの手順書フォルダ」の単位規格（`SKILL.md`、`scripts/`、`references/`）。
+- **Agent Plugins（[agentplugins.io](https://agentplugins.io)）**:
+  - 複数の Agent Skills、MCP（外部ツール接続）、Rules（規約）を束ねて配布・インストール可能にする「統合パッケージ規格」。
+
+Agent Plugins の仕様においても、スキルフォルダの内部構造は `agentskills.io` 規格がそのまま標準仕様として採用されています。
+
+---
+
+## スキル作成のベストプラクティス
+
+1. **`SKILL.md` を短く保ち、詳細は `references/` へ逃がす**
+   - `SKILL.md` に長文の API リファレンスを直書きせず、`references/` に個別ファイルとして分割する。
+2. **決定論的なスクリプトは `scripts/` に置く**
+   - 複雑な bash コマンドやデータ変換処理は、スクリプト化して同梱することで LLM の出力ブレを防ぐ。
+3. **成功判定・ロールバック手順を必ず明記する**
+   - コマンド実行後の成否判定基準（期待される出力文字列や終了コード）を記載し、自律的に完了判定を行えるようにする。
