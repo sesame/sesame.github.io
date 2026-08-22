@@ -1,9 +1,9 @@
 ---
 date: '2026-08-22T08:50:00Z'
 draft: false
-title: 'Python 開発を効率化するターミナル環境設計：fish・peco・ghq・tmux から VS Code・Herdr・Hunk 連携まで'
-description: 'fish、peco、ghq、tmux を中核としたリポジトリ・セッション管理から、VS Code との GUI 連携、AI エージェント対応マルチプレクサ herdr、TUI 差分レビューツール hunk を取り入れたモダンな Python 開発環境の構築メモ。'
-tags: ["python", "fish", "tmux", "ghq", "peco", "vscode", "herdr", "hunk", "cli", "dev-environment"]
+title: 'Python 開発を効率化するモダンターミナル環境設計：Ghostty・fish・peco・ghq・tmux・Jujutsu・VS Code・Herdr・Hunk 連携'
+description: 'Ghostty（GPU ターミナル）、fish、peco、ghq、tmux / herdr（セッション・AI エージェント管理）、Jujutsu（次世代 VCS）、hunk（TUI 差分レビュー）、VS Code を統合した、Python 開発と AI 協働のための最新ターミナル環境構築メモ。'
+tags: ["python", "ghostty", "fish", "tmux", "ghq", "peco", "jujutsu", "vscode", "herdr", "hunk", "cli", "dev-environment"]
 categories: ["Tech", "Development Environment"]
 ---
 
@@ -14,105 +14,91 @@ categories: ["Tech", "Development Environment"]
 1. **ディレクトリ移動の手間**: 階層の深いプロジェクトパスを `cd` コマンドで手動入力する。
 2. **バックグラウンドプロセスの消失**: ローカルサーバーやテスト監視、ワーカープロセスを起動したターミナルを閉じるとプロセスが終了してしまう。
 3. **仮想環境（venv / uv）の切り替え忘れ**: プロジェクトを移動するたびに手動で activate する必要がある。
-4. **GUI エディタや差分レビューの起動コスト**: ターミナルからエディタ（VS Code）や Git 差分確認画面への行き来に手間がかかる。
+4. **Git のコミット・ブランチ操作の煩雑さ**: AI や人間による頻繁な試行錯誤（スクラップ＆ビルド）で、コミットログが汚れたりコンフリクト解消に工数がかかる。
+5. **GUI エディタや差分レビューへの切り替えコスト**: ターミナルからエディタ（VS Code）や Git 差分確認画面への行き来に手間がかかる。
 
-これらの操作を自動化し、どのディレクトリからでも **ショートカット 1 つで目的の Python プロジェクトへ移動し、セッションと仮想環境を即座に復元して作業を開始できる環境** を構築します。
+これらの課題を解消し、**「端末起動 ➔ リポジトリ選択 ➔ 仮想環境アクティベート ➔ セッション復元 ➔ 安全なバージョン管理・差分レビュー」までを一気通貫で高速化するターミナル駆動開発環境（Terminal-Driven Development Stack）** を構築します。
 
-本記事では、**`ghq` ＋ `peco` ＋ `fish` ＋ `tmux`** によるクラシックな高速基盤に加え、**`VS Code`（GUI 連携）**、AI エージェント対応マルチプレクサ **`herdr`**、および TUI 差分レビューツール **`hunk`** を組み合わせたモダンな開発環境設計を整理します。
+本記事では、**Ghostty**、**fish**、**peco**、**ghq**、**tmux / herdr**、**Jujutsu (jj)**、**hunk**、および **VS Code** を組み合わせた実践的な設計と設定方法を整理します。
 
 ---
 
-## ツールスタックとそれぞれのメリット
+## ツールスタックとそれぞれの役割（レイヤー構造）
 
-各ツールが解決する課題と、導入後の具体的なメリットです。
+開発環境を構成するツール群を、インフラ（端末）からアプリケーション（エディタ・VCS）までの階層で整理します。
 
-| ツール | 単体での役割 | 使わない場合（課題） | 導入後のメリット |
+```text
++------------------------------------------------------------------------+
+| [Application Layer]                                                    |
+|  - VS Code      : GUI エディタ / デバッグ / Dev Containers              |
+|  - Jujutsu (jj) : 次世代 Git 互換 VCS（自動コミット / 完全 Undo）       |
+|  - hunk         : Review-First TUI 差分レビュー / 部分ステージング     |
++------------------------------------------------------------------------+
+| [Session & Agent Layer]                                                |
+|  - tmux / herdr : セッション永続化 / Agent-Aware 状態管理              |
++------------------------------------------------------------------------+
+| [Shell & Navigation Layer]                                             |
+|  - fish         : オートサジェスト / 構文ハイライト / 関数フック       |
+|  - ghq + peco   : リポジトリ一元配置 ＋ あいまい検索ジャンプ           |
+|  - uv           : 高速 Python パッケージ管理 / 仮想環境自動連携        |
++------------------------------------------------------------------------+
+| [Terminal Emulator Layer]                                              |
+|  - Ghostty      : Zig 製・GPU 高速描画 / 低遅延 / ネイティブ UI         |
++------------------------------------------------------------------------+
+```
+
+### 各ツールの役割と導入メリット
+
+| ツール | レイヤー | 単体での役割 | 導入後のメリット |
 | :--- | :--- | :--- | :--- |
-| **`ghq`** | リポジトリ配置の自動統一 | `~/work/`、`~/src/` 等に散らかり、どこにクローンしたか探す時間が発生 | `ghq get <URL>` で `~/ghq/github.com/...` に自動整理。置き場所の迷いがゼロになる |
-| **`peco`** | あいまい検索・選択 | 長いパスやコマンド履歴を正確にフルタイピングする必要がある | 数文字のキーワードを入力するだけで、候補一覧からインクリメンタルに瞬時選択できる |
-| **`fish`** | 設定不要で賢いシェル | 補完やシンタックスハイライト、オートサジェストに複雑な設定・プラグインが必要 | インストール直後から「過去履歴の薄い予測補完（右矢印で確定）」や構文エラー検知が動作する |
-| **`tmux`** | セッション永続化・画面分割 | ウィンドウを閉じると開発サーバーやテストが終了し、タブが乱立する | ターミナルを閉じても裏でプロセスが生き続け、プロジェクト単位で作業状態を丸ごと復元できる |
-| **`VS Code`** | GUI エディタ / デバッグ | CLI だけでは複雑なマルチファイル編集や視覚的デバッグが煩雑 | `code <path>` で CLI から瞬時に開き、Dev Containers で完全分離環境と連携 |
-| **`herdr`** | Agent-Aware マルチプレクサ | 複数の AI エージェント（Claude Code 等）を動かすと誰が作業中か把握困難 | 各ペインで稼働する AI の状態（working / blocked / done）を自動検知してダッシュボード管理 |
-| **`hunk`** | Review-First TUI 差分ビューア | `git diff` のスクロールや対話的 `git add -p` での確認に時間がかかる | AI が生成した変更差分をインラインで高速レビューし、行単位で決定論的にステージング |
+| **`Ghostty`** | ターミナル | GPU 描画ターミナルエミュレータ | 低遅延・高速レンダリング、ネイティブなタブ/画面分割、Kitty グラフィックス対応 |
+| **`fish`** | シェル | 設定不要で賢いシェル | 過去履歴の予測補完（オートサジェスト）や構文エラー検知がプラグインなしで動作 |
+| **`ghq`** | ナビゲーション | リポジトリ配置の自動統一 | `ghq get <URL>` で `~/ghq/github.com/...` に自動整理。置き場所の迷いを排除 |
+| **`peco`** | ナビゲーション | 対話型インクリメンタルフィルタ | キーワード入力だけで大量の候補から瞬時に選択・決定 |
+| **`tmux`** | セッション | ターミナルマルチプレクサ | ターミナルを閉じても裏でサーバーやテストが維持され、作業空間を丸ごと復元 |
+| **`herdr`** | セッション | Agent-Aware マルチプレクサ | 各ペインで稼働する AI エージェントの状態（working / blocked / done）を自動検知 |
+| **`Jujutsu (jj)`** | VCS | 次世代 Git 互換バージョン管理 | 作業コピーの自動コミット、全操作の `jj undo`、コンフリクトを恐れないスタック開発 |
+| **`hunk`** | レビュー | Review-First TUI 差分ビューア | AI や自身が変更したコード差分をインラインで高速レビューし、行単位で安全にステージング |
+| **`VS Code`** | エディタ | GUI エディタ / デバッグ | `code <path>` で CLI から瞬時に開き、GUI デバッガや Dev Containers と連携 |
 
 ---
 
-## 組み合わせたときの開発フロー（Before / After）
+## 1. Ghostty：高速・低遅延な GPU ターミナル基盤
 
-これらを組み合わせることで、**「プロジェクトの切り替え摩擦」がほぼゼロ** になります。
+**Ghostty ([ghostty.org](https://ghostty.org))** は、Mitchell Hashimoto 氏が開発した Zig 製の GPU アクセラレーテッド ターミナルエミュレータです。
 
-```text
-【従来のやり方（Before）】
-1. 「あのプロジェクトどこだっけ…」とパスを探す
-2. cd ~/projects/sub/api-server とタイピング
-3. source .venv/bin/activate.fish で仮想環境を有効化
-4. uvicorn main:app --reload でサーバー起動
-5. 別タブを開いて pytest を起動
-6. VS Code を立ち上げてフォルダを開き直す
-（別の急ぎのバグ修正が来たら、また新しいタブを開いて 1 からやり直し…）
-
-【モダン環境（After）】
-1. 画面のどこからでも「Ctrl + ]」を押す
-2. 「api」と打って Enter
-➔ これだけで、そのプロジェクト専用の tmux（または herdr）部屋にジャンプし、
-   仮想環境（uv/venv）が自動で有効になり、
-   裏で動いていたサーバーやテスト画面がそのまま目の前に復帰する
-3. 必要に応じて「Ctrl + v」で VS Code をワンショット起動
-4. AI が書いた差分は「hunk」で瞬時に視覚的レビュー
-```
-
-```text
-[ キー入力: Ctrl + ] ]
-       │
-       ▼
-ghq list -p  ──(パス一覧を出力)──>  peco  ──(絞り込み・選択)──>  選択したプロジェクトパス
-                                                                          │
-                                                                          ├──> tmux / herdr セッション自動アタッチ（.venv 自動有効化）
-                                                                          └──> VS Code 起動（code <path>）
-```
+- **GPU レンダリングによる高速描画**: GPU アクセラレーションにより、大容量のログ出力や高速スクロールでもカクつかず低遅延で動作。
+- **ネイティブ UI 統合**: macOS や Linux のネイティブ UI を採用し、タブやスプリットペインを軽快に操作可能。
+- **モダンプロトコル対応**: Kitty グラフィックスプロトコルや TrueColor、アンダーライン装飾に対応し、TUI ツール（hunk, peco 等）が美しく描画されます。
 
 ---
 
-## 1. ghq によるリポジトリ管理の統一
+## 2. ghq によるリポジトリ管理の統一
 
 `ghq` は、Git リポジトリのクローン先を決められたディレクトリ構造（デフォルトは `~/ghq/github.com/owner/repo`）に自動で整理・配置するツールです。
 
-### インストールと基本操作
-
 ```bash
-# macOS (Homebrew)
-brew install ghq
-
 # リポジトリのクローン
 ghq get https://github.com/fastapi/fastapi.git
 ghq get owner/my-python-project
-```
 
-クローンしたリポジトリはすべて一元管理され、以下のコマンドで絶対パスの一覧を出力できます。
-
-```bash
+# パス一覧の確認
 ghq list -p
-# 出力例:
 # /home/user/ghq/github.com/fastapi/fastapi
 # /home/user/ghq/github.com/owner/my-python-project
 ```
 
 ---
 
-## 2. fish ＋ peco による 1 キープロジェクト移動
+## 3. fish ＋ peco による 1 キープロジェクト移動
 
-`peco` は、標準入力から受け取った文字列をインクリメンタル検索し、選択した 1 行を標準出力へ返すインタラクティブフィルターです。
-
-`fish` のキーバインドと組み合わせることで、`Ctrl + ]`（または `Ctrl + g`）を押すだけで全リポジトリを検索してジャンプする関数を作成します。
+`fish` のキーバインドに `ghq list -p | peco` を組み込むことで、`Ctrl + ]` を押すだけで全リポジトリを検索してジャンプする環境を構築します。
 
 ### 関数の実装 (`~/.config/fish/functions/fish_user_key_bindings.fish`)
 
 ```fish
 function peco_select_ghq_repository
-    # ghq で管理されているリポジトリを peco で絞り込む
     set -l repo_path (ghq list -p | peco --query (commandline))
-
     if test -n "$repo_path"
         cd $repo_path
         commandline -f repaint
@@ -120,20 +106,17 @@ function peco_select_ghq_repository
 end
 
 function fish_user_key_bindings
-    # Ctrl + ] でプロジェクト検索・移動を発動
     bind \c\] peco_select_ghq_repository
 end
 ```
 
 ---
 
-## 3. tmux による「プロジェクト = セッション」の自動生成
+## 4. tmux / herdr によるセッション永続化と AI 状態管理
 
-単に `cd` するだけでなく、**「プロジェクトごとに独立した tmux セッションを自動作成またはアタッチする」** 仕組みを組み込みます。
+### ① tmux：プロジェクト単位の作業部屋自動作成
 
-これにより、プロジェクトごとにエディタ、開発サーバー（`uvicorn` 等）、テスト監視（`pytest -f`）のペイン状態が保持され、プロジェクトを切り替えても作業コンテキストが失われません。
-
-### tmux 連携関数の実装 (`peco_open_ghq_tmux`)
+ディレクトリ移動と同時に、プロジェクト専用の tmux セッションを作成またはアタッチします。
 
 ```fish
 function peco_open_ghq_tmux
@@ -142,10 +125,8 @@ function peco_open_ghq_tmux
         return
     end
 
-    # ディレクトリ名からセッション名を生成（記号を置換）
     set -l session_name (basename $repo_path | tr '.' '_')
 
-    # tmux セッション外にいる場合
     if test -z "$TMUX"
         if tmux has-session -t $session_name 2>/dev/null
             tmux attach-session -t $session_name
@@ -153,24 +134,27 @@ function peco_open_ghq_tmux
             tmux new-session -s $session_name -c $repo_path
         end
     else
-        # 既に tmux 内にいる場合は switch-client でセッションを切り替える
         if not tmux has-session -t $session_name 2>/dev/null
             tmux new-session -d -s $session_name -c $repo_path
         end
         tmux switch-client -t $session_name
     end
-
     commandline -f repaint
 end
 ```
 
+### ② herdr：AI エージェント協働時代のマルチプレクサ
+
+AI コーディングエージェント（Claude Code、Codex、Antigravity 等）をバックグラウンドで並行稼働させる場合、**`herdr` ([github.com/ogulcancelik/herdr](https://github.com/ogulcancelik/herdr))** が力を発揮します。
+
+- **エージェント状態の自動認識**: 各ペインの AI が作業中（`working`）、入力待ち（`blocked`）、完了（`done`）かを自動検知。
+- **tmux 互換のセッション永続化**: バックグラウンドでのプロセス維持とエージェント監視ダッシュボードを両立。
+
 ---
 
-## 4. Python 仮想環境（uv / venv）の自動アクティベーション
+## 5. Python 仮想環境（uv / venv）の自動アクティベーション
 
-ディレクトリ移動時、カレント配下に `.venv` が存在すれば自動でアクティベートする設定を `fish` に組み込みます。
-
-### `fish` のイベントフック（`on_variable PWD`）
+ディレクトリ移動時に、カレント配下の `.venv` を自動で有効化します。
 
 `~/.config/fish/functions/auto_activate_venv.fish`:
 
@@ -191,27 +175,65 @@ function auto_activate_venv --on-variable PWD --description "ディレクトリ�
 end
 ```
 
-### 高速パッケージマネージャー `uv` との組み合わせ
+Rust 製の高速パッケージマネージャー **`uv`**（`uv venv` ➔ `uv pip install ...`）と組み合わせることで、ミリ秒単位で環境構築が完了します。
 
-モダンな Python プロジェクトでは、Rust 製の高速パッケージマネージャー **`uv`** を併用することで、環境構築と依存関係の解決が数秒で完了します。
+---
+
+## 6. Jujutsu（jj）：Git 互換の次世代バージョン管理
+
+**Jujutsu (`jj`) ([github.com/martinvonz/jj](https://github.com/martinvonz/jj))** は、Google 発の Rust 製次世代分散バージョン管理システムです。既存の Git リポジトリ（`.git`）上でそのまま透過的に動作します。
+
+```text
++-------------------------------------------------------------+
+| Jujutsu (jj) CLI                                            |
+|   - 作業コピーの自動追跡（Working-copy Commit）              |
+|   - 全操作の履歴管理と完全な巻き戻し（jj undo / op log）    |
+|   - コンフリクトの第一級オブジェクト化（作業をブロックしない）|
++-------------------------------------------------------------+
+                              │ (バックエンドとして共存)
+                              ▼
++-------------------------------------------------------------+
+| Standard Git Repository (.git)                              |
+|   - GitHub リモートリポジトリとの通信・Push/Pull            |
++-------------------------------------------------------------+
+```
+
+### なぜ Python 開発 / AI 協働で `jj` が強力なのか？
+
+1. **`git commit` を手動で打つ必要がない（Working-copy Commit）**:
+   - ファイルを保存した瞬間、自動で背後にコミット（Change ID）が作成されます。「コミットし忘れて作業ツリーを汚す」心配がありません。
+2. **どんな破壊的変更も一発で巻き戻せる (`jj undo`)**:
+   - `jj` はすべての操作をオペレーションログ（`jj op log`）に記録しているため、AI がコードを壊したりリベースを誤っても、`jj undo` コマンド 1 つで完全に直前の状態へ戻せます。
+3. **ブランチを切らずに複数の作業をスタックできる（Stacked Changes）**:
+   - 変更（Change）を積み重ねて管理でき、作業ごとのブランチ作成・切り替えの手間を大幅に削減します。
 
 ```bash
-# プロジェクト作成と仮想環境初期化
-cd (ghq root)/github.com/owner/my-app
-uv venv
-# ↑ 作成された時点で fish のフックにより即座に .venv がアクティベートされる
+# 既存の Git リポジトリで jj を初期化
+jj git init --colocate
 
-# 依存パッケージの追加
-uv pip install fastapi uvicorn
+# 現在の状態確認（コミットツリーと変更内容が即座に表示される）
+jj status
+jj log
+
+# 失敗した変更を直ちに巻き戻す
+jj undo
 ```
 
 ---
 
-## 5. VS Code 連携：CLI からのワンショット起動
+## 7. 差分レビューと部分コミットの高速化「hunk」
 
-ターミナルの高速な移動性と、VS Code の高機能なデバッガ・GUI 編集機能をシームレスに繋ぎます。
+**`hunk` ([modem-dev/hunk](https://github.com/modem-dev/hunk))** は、ターミナル上でリッチなコードレビュー体験を提供する Review-First TUI ツールです。
 
-### `peco` から直接 VS Code を開く関数 (`peco_open_ghq_vscode`)
+- **ファイルツリー付きの差分レビュー**: 変更された全ファイルをツリー形式で確認し、キーボードで素早く移動。
+- **インラインレビュー**: AI が生成したコードの修正理由やアノテーションを差分上で直接確認。
+- **部分ステージング**: `git add -p` のように対話的に質問されず、TUI 上で必要な行を選択して直感的にコミット対象に含めることが可能。
+
+---
+
+## 8. VS Code 連携：CLI からのワンショット起動
+
+ターミナルの高速ナビゲーションと、VS Code のデバッガ・GUI 機能を繋ぎます。
 
 ```fish
 function peco_open_ghq_vscode
@@ -223,37 +245,9 @@ function peco_open_ghq_vscode
 end
 ```
 
-`Ctrl + v` にこの関数をバインドしておけば、ターミナル上でプロジェクトを絞り込んで即座に VS Code の新しいウィンドウで開くことができます。
-
 ---
 
-## 6. 次世代の選択肢：AI エージェント対応マルチプレクサ「herdr」
-
-AI コーディングエージェント（Claude Code、Codex、GitHub Copilot CLI、Antigravity 等）をバックグラウンドで並行稼働させるケースが増えています。
-
-従来の `tmux` は人間が操作することを前提としていますが、Rust 製のターミナルマルチプレクサ **`herdr` ([github.com/ogulcancelik/herdr](https://github.com/ogulcancelik/herdr))** は **「Agent-Aware（エージェント対応）」** な設計が特徴です。
-
-- **エージェント状態の自動検知**: 各ペインで動作する AI エージェントのステータス（`working`, `blocked`, `done`, `idle`）を自動認識。
-- **ダッシュボード管理**: どのエージェントが入力を待っているか（blocked）、作業が完了したか（done）を一覧で把握可能。
-- **tmux 互換の永続性**: バックグラウンドサーバーによるセッション永続化を維持しながら、エージェント協働に特化した UI を提供。
-
----
-
-## 7. 差分レビューと部分コミットの高速化「hunk」
-
-AI コーディングエージェントが生成した大量のコード変更をレビューする際、標準の `git diff` や対話型の `git add -p` では確認速度が追いつかない課題があります。
-
-ここで役立つのが **`hunk` ([modem-dev/hunk](https://github.com/modem-dev/hunk))** などの Review-First TUI ツールです。
-
-- **マルチファイル差分の TUI レビュー**: ファイルツリー付きの分割画面で、AI が変更した全ファイルの差分をキーボード操作で高速レビュー。
-- **インラインアノテーション**: 変更理由やエージェントのコメントを差分上で直接確認。
-- **行単位の決定論的ステージング**: 必要な変更行だけを正確に選択してコミット対象に含めることが可能。
-
----
-
-## 8. 推奨設定ファイル一覧
-
-本環境を構成する設定ファイルの全体像です。
+## 9. 推奨設定ファイル一覧
 
 ### `~/.config/fish/config.fish`
 
@@ -274,7 +268,7 @@ function peco_select_history
 end
 
 function fish_user_key_bindings
-    bind \c\] peco_select_ghq_repository  # プロジェクト移動
+    bind \c\] peco_select_ghq_repository  # プロジェクト移動 (cd)
     bind \co  peco_open_ghq_tmux          # tmux セッション起動/アタッチ
     bind \cv  peco_open_ghq_vscode        # VS Code で開く
     bind \cr  peco_select_history         # 履歴検索
@@ -289,7 +283,7 @@ set -g prefix C-q
 unbind C-b
 bind C-q send-prefix
 
-# 256色 / TrueColor の有効化
+# TrueColor の有効化
 set -g default-terminal "screen-256color"
 set -ga terminal-overrides ",xterm-256color:Tc"
 
@@ -312,10 +306,10 @@ bind '"' split-window -v -c "#{pane_current_path}"
 
 ## まとめ
 
-- **`ghq` ＋ `peco`**: リポジトリの配置場所を標準化し、1 キーで目的のプロジェクトへ移動。
-- **`fish` ＋ `uv`**: 設定不要の高速シェルと自動アクティベートで Python 仮想環境の管理摩擦を排除。
-- **`tmux` / `herdr`**: セッションを永続化し、複数プロジェクトや AI エージェントの並行作業を整理。
-- **`VS Code` ＋ `hunk`**: CLI の機動力と GUI/TUI の視覚的レビュー・デバッグを最適に組み合わせる。
+- **基盤（Ghostty ＋ fish）**: GPU レンダリングの高速端末と設定不要の賢いシェルで操作の遅延を排除。
+- **ナビゲーション（ghq ＋ peco ＋ uv）**: リポジトリ配置を標準化し、1 キー移動 ＋ 仮想環境の自動アクティベートを実現。
+- **セッション（tmux / herdr）**: 作業状態を永続化し、AI エージェントの並行タスクをダッシュボード管理。
+- **バージョン管理・レビュー（Jujutsu ＋ hunk ＋ VS Code）**: 自動コミットと完全 Undo（`jj`）で試行錯誤を安全化し、TUI（`hunk`）と GUI（`VS Code`）で差分確認とデバッグを最適化。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
 
@@ -323,10 +317,12 @@ bind '"' split-window -v -c "#{pane_current_path}"
 
 ## 参考リンク・情報ソース
 
+- [Ghostty: Fast, feature-rich, and cross-platform terminal emulator (ghostty.org)](https://ghostty.org)
+- [Jujutsu (jj): A Git-compatible VCS that is both simple and powerful (GitHub)](https://github.com/martinvonz/jj)
+- [herdr: Agent-aware terminal multiplexer (GitHub)](https://github.com/ogulcancelik/herdr)
+- [hunk: Review-first diff viewer for terminal (GitHub)](https://github.com/modem-dev/hunk)
 - [ghq: Remote repository management made easy (GitHub)](https://github.com/x-motemen/ghq)
 - [peco: Simplistic interactive filtering tool (GitHub)](https://github.com/peco/peco)
 - [fish shell: Friendly Interactive Shell 公式ドキュメント](https://fishshell.com)
 - [tmux: Terminal Multiplexer (GitHub)](https://github.com/tmux/tmux)
-- [herdr: Agent-aware terminal multiplexer (GitHub)](https://github.com/ogulcancelik/herdr)
-- [hunk: Review-first diff viewer for terminal (GitHub)](https://github.com/modem-dev/hunk)
 - [uv: Extremely fast Python package installer and resolver (Astral)](https://github.com/astral-sh/uv)
