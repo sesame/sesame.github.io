@@ -146,5 +146,12 @@ reading_time = true
 [library.js]
   custom = "js/custom.js"
 
+[analytics]
+  enable = true
+  [analytics.google]
+    id = "G-3Z1JD21G6H"
+    anonymizeIP = true
+
 [custom_partials]
   head = ["custom/head.html"]
+
