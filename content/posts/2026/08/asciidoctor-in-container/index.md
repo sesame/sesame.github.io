@@ -1,38 +1,40 @@
 ---
 date: '2026-08-16T11:28:00Z'
-draft: true
+draft: false
 title: 'Hugo で Asciidoctor をコンテナ連携させて動かす構成メモ'
-description: 'Hugo で AsciiDoc を使う際、メインの開発環境に Ruby や Gem を直接インストールせず、Docker コンテナ + CLI ラッパーで透過的に呼び出す構成の実装手順とメモ。'
+description: 'Hugo で AsciiDoc を使う際、メインの開発環境に Ruby や Gem を直接インストールせず、Docker コンテナ + CLI ラッパーで透過的に呼び出す構成の実装手順と並行ビルド対策メモ。'
 tags: ["hugo", "asciidoc", "asciidoctor", "docker", "devcontainers", "ruby"]
 categories: ["Tech", "Architecture"]
 ---
 
+## はじめに
+
 Hugo で AsciiDoc（`.adoc`）を HTML に変換する場合、Ruby 製の `asciidoctor` コマンドが必要です。
 
-しかし、Go メインの開発環境や DevContainer に Ruby や Bundler、Rouge などの Gem を直接入れたくなかったため、**「Asciidoctor を専用コンテナに切り出し、CLI ラッパースクリプトで透過的に呼び出す」** 構成を組んだときのメモです。
+しかし、Go メインの開発環境や DevContainer に Ruby や Bundler、Rouge などの Gem を直接追加したくなかったため、**「Asciidoctor を専用コンテナに切り出し、CLI ラッパースクリプトで透過的に呼び出す」** 構成を組んだときの技術メモです。
 
 ---
 
-## 全体構成
+## 全体構成とアーキテクチャ
 
 Hugo から見るとローカルの `asciidoctor` コマンドを呼んでいるだけですが、実際にはラッパースクリプトが `docker run` を経由してコンテナ内でパース処理を行います。
 
 ```text
-Hugo
-  │ (1) asciidoctor を実行
+Hugo (Go / DevContainer)
+  │ (1) asciidoctor を実行 (stdin で .adoc を渡す)
   ▼
 ラッパースクリプト (~/.local/bin/asciidoctor)
-  │ (2) stdin をコンテナに流し込み、stdout を受け取る
+  │ (2) 排他制御 (flock) ＋ stdin をコンテナに流し込む
   ▼
 Asciidoctor 専用コンテナ (Ruby + Rouge)
-  │ (3) HTML に変換して標準出力へ
+  │ (3) HTML に変換して標準出力へ返す
 ```
 
 ---
 
 ## 構築手順
 
-### 1. Dockerfile と Gemfile の準備
+### Dockerfile と Gemfile の準備
 
 `Dockerfile.asciidoctor`:
 ```dockerfile
@@ -63,14 +65,41 @@ gem 'rouge', '~> 4.0'
 docker build -t adoc_converter:latest -f Dockerfile.asciidoctor .
 ```
 
-### 2. ラッパースクリプトの配置
+### ラッパースクリプトの配置と並行ビルド対策
 
-パスの通った場所（`~/.local/bin/asciidoctor`）にスクリプトを作成します。
+Hugo は複数ページを高速に並行ビルドするため、素朴な `docker run` ラッパーでは **「標準入出力パイプの競合・切断による 0 bytes 出力エラー」** が発生します。
+
+これを防止するため、一時ファイルへの読み込みと `flock` による排他制御を組み込みます。
+
+`~/.local/bin/asciidoctor`:
 
 ```bash
 #!/usr/bin/env bash
-# 標準入力・引数をコンテナへ中継
-exec docker run --rm -i --entrypoint bundle adoc_converter:latest exec asciidoctor "$@"
+set -euo pipefail
+
+# 1. Hugo 側のタイムアウトを防ぐため、ロック取得前に標準入力を即座に一時ファイルへ読み切る
+TMP_INPUT=$(mktemp)
+TMP_OUTPUT=$(mktemp)
+trap 'rm -f "$TMP_INPUT" "$TMP_OUTPUT"' EXIT
+
+cat > "$TMP_INPUT"
+
+# 2. 入力が 0 bytes の場合はコンテナを起動せず即座に終了
+if [[ ! -s "$TMP_INPUT" ]]; then
+  exit 0
+fi
+
+# 3. docker run の実行部分のみを flock で排他制御（直列化）
+(
+  flock -x 200
+  docker run --rm -i \
+    -v "$TMP_INPUT:/tmp/input.adoc:ro" \
+    --entrypoint bundle \
+    adoc_converter:latest \
+    exec asciidoctor -o - "$@" /tmp/input.adoc > "$TMP_OUTPUT"
+) 200>/tmp/asciidoctor_build.lock
+
+cat "$TMP_OUTPUT"
 ```
 
 実行権限を付与：
@@ -79,11 +108,9 @@ exec docker run --rm -i --entrypoint bundle adoc_converter:latest exec asciidoct
 chmod +x ~/.local/bin/asciidoctor
 ```
 
-標準入力を受け取るため、`docker run` に `-i` を付けるのがポイントです。
+### Hugo の設定 (`hugo.toml`)
 
-### 3. Hugo の設定 (`hugo.toml`)
-
-Hugo が外部コマンドとして `asciidoctor` を呼べるように許可します。
+Hugo が外部コマンドとして `asciidoctor` を呼べるようにセキュリティ設定で許可します。
 
 ```toml
 [security.exec]
@@ -92,11 +119,10 @@ Hugo が外部コマンドとして `asciidoctor` を呼べるように許可し
 
 ---
 
-## メリット
+## 運用のメリット
 
-- **メイン環境が汚れない**: Ruby や各種 Gem がメインのコンテナ/ホストに入らない。
-- **バージョンの固定**: Docker イメージ内に閉じているため、ローカルと CI 間での挙動差が起きない。
-- **DevContainer との連携**: Docker-outside-of-Docker を有効にしておけば、DevContainer 内からでも同じように動く。
+- **メイン環境の保全**: Ruby や各種 Gem がメインの開発環境（DevContainer）に入らず、依存関係の衝突を防げる。
+- **バージョンの固定**: Docker イメージ内にツールチェーンが固定されているため、ローカルと CI 間でのビルド差異が起きない。
+- **高速性と安全性の両立**: 排他制御により、並行ビルド時のパイプ切断エラーを確実に防止。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
-

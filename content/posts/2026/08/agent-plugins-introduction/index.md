@@ -95,7 +95,7 @@ AI コーディングエージェント（Antigravity、Cursor、GitHub Copilot�
 
 ---
 
-## 3 つの標準規格の関係性
+## 標準規格の関係性（Rules・Skills・MCP）
 
 Agent Plugins はゼロから作られたものではなく、**先行して普及していた 2 つのオープン標準「MCP」と「Agent Skills」を包括する「共通プラグイン規格」** として位置づけられています。
 

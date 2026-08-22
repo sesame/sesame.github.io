@@ -1,17 +1,19 @@
 ---
 date: '2026-08-16T11:46:00Z'
-draft: true
+draft: false
 title: 'MITRE ATT&CK の基本構造と防御視点での活用メモ'
-description: 'サイバー攻撃者の行動パターンを体系化したナレッジベース「MITRE ATT&CK」のTTPs階層構造、ドメイン、DeTT&CTやD3FENDなど周辺ツールを活用した検知設計の整理。'
+description: 'サイバー攻撃者の行動パターンを体系化したナレッジベース「MITRE ATT&CK」の TTPs 階層構造、ドメイン、DeTT&CT や D3FEND など周辺ツールを活用した検知設計の整理。'
 tags: ["security", "mitre", "attck", "threat-intelligence", "dettect", "d3fend"]
 categories: ["Tech", "Security"]
 ---
 
-サイバー攻撃者の侵入後行動（Post-compromise behavior）を体系化したナレッジベース、**MITRE ATT&CK** について、その構造と防御側（ブルーチーム）での活用方法をまとめました。
+## はじめに
+
+サイバー攻撃者の侵入後行動（Post-compromise behavior）を体系化したナレッジベース、**MITRE ATT&CK** について、その基本構造と防御側（ブルーチーム）での活用方法をまとめます。
 
 ---
 
-## コア要素：TTPs
+## コア要素：TTPs の階層構造
 
 ATT&CK は **TTP（Tactics, Techniques, Procedures）** の階層構造で攻撃手法を整理しています。
 
@@ -24,11 +26,13 @@ ATT&CK は **TTP（Tactics, Techniques, Procedures）** の階層構造で攻撃
 
 ---
 
-## 3つのドメイン
+## 対象ドメインの分類
+
+ATT&CK は対象環境に応じて 3 つのドメインに分かれています。
 
 - **Enterprise**: Windows, Linux, macOS, AWS/Azure/GCP, Active Directory などの一般的な企業環境
-- **Mobile**: Android, iOS
-- **ICS**: 工場やインフラ（SCADA, PLC）などの産業制御システム
+- **Mobile**: Android, iOS などのモバイルプラットフォーム
+- **ICS**: 工場や社会インフラ（SCADA, PLC）などの産業制御システム
 
 ---
 
@@ -42,12 +46,11 @@ ATT&CK は **TTP（Tactics, Techniques, Procedures）** の階層構造で攻撃
 
 ---
 
-## 関連ツール
+## 周辺エコシステムと関連ツール
 
-- **ATT&CK Navigator**: マトリクスをブラウザ上でヒートマップ表示・レイヤー比較できるツール。
+- **ATT&CK Navigator**: マトリクスをブラウザ上でヒートマップ表示・レイヤー比較できる公式ツール。
 - **DeTT&CT**: 収集ログと検知ルールから、防御体制の死角（カバレッジの穴）をスコアリングするフレームワーク。
 - **D3FEND**: ATT&CK の各攻撃手法に対応する「防御技術」を体系化したオントロジー。
 - **mitreattack-python**: STIX 形式のデータをプログラムから操作するための公式 Python ライブラリ。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
-

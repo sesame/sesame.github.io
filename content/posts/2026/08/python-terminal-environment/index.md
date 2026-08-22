@@ -63,7 +63,7 @@ categories: ["Tech", "Development Environment"]
 
 ---
 
-## 1. Ghostty：高速・低遅延な GPU ターミナル基盤
+## Ghostty：高速・低遅延な GPU ターミナル基盤
 
 **Ghostty ([ghostty.org](https://ghostty.org))** は、Mitchell Hashimoto 氏が開発した Zig 製の GPU アクセラレーテッド ターミナルエミュレータです。
 
@@ -73,7 +73,7 @@ categories: ["Tech", "Development Environment"]
 
 ---
 
-## 2. ghq によるリポジトリ管理の統一
+## ghq によるリポジトリ管理の統一
 
 `ghq` は、Git リポジトリのクローン先を決められたディレクトリ構造（デフォルトは `~/ghq/github.com/owner/repo`）に自動で整理・配置するツールです。
 
@@ -90,7 +90,7 @@ ghq list -p
 
 ---
 
-## 3. fish ＋ peco による 1 キープロジェクト移動
+## fish ＋ peco による 1 キープロジェクト移動
 
 `fish` のキーバインドに `ghq list -p | peco` を組み込むことで、`Ctrl + ]` を押すだけで全リポジトリを検索してジャンプする環境を構築します。
 
@@ -112,9 +112,9 @@ end
 
 ---
 
-## 4. tmux / herdr によるセッション永続化と AI 状態管理
+## tmux / herdr によるセッション永続化と AI 状態管理
 
-### ① tmux：プロジェクト単位の作業部屋自動作成
+### tmux：プロジェクト単位の作業部屋自動作成
 
 ディレクトリ移動と同時に、プロジェクト専用の tmux セッションを作成またはアタッチします。
 
@@ -143,7 +143,7 @@ function peco_open_ghq_tmux
 end
 ```
 
-### ② herdr：AI エージェント協働時代のマルチプレクサ
+### herdr：AI エージェント協働時代のマルチプレクサ
 
 AI コーディングエージェント（Claude Code、Codex、Antigravity 等）をバックグラウンドで並行稼働させる場合、**`herdr` ([github.com/ogulcancelik/herdr](https://github.com/ogulcancelik/herdr))** が力を発揮します。
 
@@ -152,7 +152,7 @@ AI コーディングエージェント（Claude Code、Codex、Antigravity 等�
 
 ---
 
-## 5. Python 仮想環境（uv / venv）の自動アクティベーション
+## Python 仮想環境（uv / venv）の自動アクティベーション
 
 ディレクトリ移動時に、カレント配下の `.venv` を自動で有効化します。
 
@@ -179,7 +179,7 @@ Rust 製の高速パッケージマネージャー **`uv`**（`uv venv` ➔ `uv 
 
 ---
 
-## 6. Jujutsu（jj）：Git 互換の次世代バージョン管理
+## Jujutsu（jj）：Git 互換の次世代バージョン管理
 
 **Jujutsu (`jj`) ([github.com/martinvonz/jj](https://github.com/martinvonz/jj))** は、Google 発の Rust 製次世代分散バージョン管理システムです。既存の Git リポジトリ（`.git`）上でそのまま透過的に動作します。
 
@@ -221,7 +221,7 @@ jj undo
 
 ---
 
-## 7. 差分レビューと部分コミットの高速化「hunk」
+## 差分レビューと部分コミットの高速化「hunk」
 
 **`hunk` ([modem-dev/hunk](https://github.com/modem-dev/hunk))** は、ターミナル上でリッチなコードレビュー体験を提供する Review-First TUI ツールです。
 
@@ -231,7 +231,7 @@ jj undo
 
 ---
 
-## 8. VS Code 連携：CLI からのワンショット起動
+## VS Code 連携：CLI からのワンショット起動
 
 ターミナルの高速ナビゲーションと、VS Code のデバッガ・GUI 機能を繋ぎます。
 
@@ -247,7 +247,7 @@ end
 
 ---
 
-## 9. 推奨設定ファイル一覧
+## 推奨設定ファイル一覧
 
 ### `~/.config/fish/config.fish`
 

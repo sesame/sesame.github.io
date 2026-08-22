@@ -1,15 +1,17 @@
 ---
 date: '2026-08-16T11:25:00Z'
-draft: true
+draft: false
 title: 'Dev Containers による開発環境のコード化と Hugo + AIエージェント構成例'
 description: 'VS Code の Dev Containers を使ってチーム共通の開発環境をコード化する手順。devcontainer.json の書き方と、Hugo + Antigravity CLI を動かす構成例メモ。'
 tags: ["docker", "devcontainers", "vscode", "hugo", "environment"]
 categories: ["Tech", "DevOps"]
 ---
 
-ローカルマシンの環境汚染を防ぎ、チーム全員で同一のツールチェーンを共有するために、VS Code の **Dev Containers** を使っています。
+## はじめに
 
-`.devcontainer/` の基本設定と、当ブログで使っている Hugo + AIエージェント（Antigravity）向けの構成例をまとめました。
+ローカルマシンの環境汚染を防ぎ、チーム全員で同一のツールチェーンを共有するために、VS Code の **Dev Containers** を採用しています。
+
+本記事では、`.devcontainer/` の基本設定と、当ブログで運用している Hugo ＋ AI コーディングエージェント（Antigravity）向けの構成例をまとめます。
 
 ---
 
@@ -24,7 +26,7 @@ categories: ["Tech", "DevOps"]
 └── post-create.sh      # コンテナ生成後の初期化スクリプト
 ```
 
-### `devcontainer.json` の例
+### `devcontainer.json` の設定例
 
 ```jsonc
 {
@@ -80,11 +82,10 @@ chmod +x /home/vscode/.local/bin/new-post
 
 ---
 
-## 設定時のポイント
+## 設定時の設計ポイント
 
-1. **Features を使う**: Node.js や Docker in Docker などの追加ツールは、`Dockerfile` で自前ビルドするより Dev Container Features を指定する方が壊れにくい。
-2. **データの永続化**: コンテナを再構築してもキャッシュやログインセッションを残したい場合は、`mounts` で Named Volume を割り当てる。
-3. **一般ユーザーで実行**: `remoteUser: "vscode"` を指定し、ホスト側のファイル権限が root で汚染されるのを防ぐ。
+1. **Dev Container Features の活用**: Node.js や Docker in Docker などの追加ツールは、`Dockerfile` で自前ビルドするより Dev Container Features を指定する方がメンテナンス性に優れます。
+2. **データの永続化（Named Volume）**: コンテナを再構築してもキャッシュや AI エージェントのログデータを残したい場合は、`mounts` で Named Volume を割り当てます。
+3. **一般ユーザーでの実行（権限分離）**: `remoteUser: "vscode"` を指定し、ホスト側のファイル権限が root で汚染されるのを防ぎます。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
-
