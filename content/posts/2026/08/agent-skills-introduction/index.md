@@ -169,3 +169,22 @@ Agent Plugins の仕様においても、スキルフォルダの内部構造は
    - コマンド実行後の成否判定基準（期待される出力文字列や終了コード）を記載し、自律的に完了判定を行えるようにする。
 4. **テストケース（`evals/`）を整備してリグレッションを防ぐ**
    - スキルの発動条件（プロンプト例）と期待される出力シナリオを定義し、プロンプト変更やモデルアップデート時の精度劣化を防ぐ。
+
+---
+
+## まとめ
+
+- **段階的開示（Progressive Disclosure）**: 探索時（メタデータのみ）➔ 発動時（本文展開）➔ 実行時（スクリプト・詳細仕様の参照）の 3 段階でトークン消費を最小化。
+- **標準ディレクトリ構造**: `SKILL.md` を起点に `scripts/`、`references/`、`assets/`、`evals/` を整理し、ポータブルな運用手順書を構築。
+- **エコシステムとの調和**: 常時規約（`AGENTS.md`）とタスク別手順（`Agent Skills`）を明確に分離し、統合パッケージ規格（`Agent Plugins`）とシームレスに連携。
+
+> ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
+
+---
+
+## 参考リンク・情報ソース
+
+- [Agent Skills 公式仕様 (agentskills.io)](https://agentskills.io)
+- [Agent Plugins: The Open Packaging Standard (agent-plugins.org)](https://agent-plugins.org)
+- [Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023)](https://arxiv.org/abs/2307.03172)
+

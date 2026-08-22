@@ -85,3 +85,6 @@ chmod +x /home/vscode/.local/bin/new-post
 1. **Features を使う**: Node.js や Docker in Docker などの追加ツールは、`Dockerfile` で自前ビルドするより Dev Container Features を指定する方が壊れにくい。
 2. **データの永続化**: コンテナを再構築してもキャッシュやログインセッションを残したい場合は、`mounts` で Named Volume を割り当てる。
 3. **一般ユーザーで実行**: `remoteUser: "vscode"` を指定し、ホスト側のファイル権限が root で汚染されるのを防ぐ。
+
+> ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
+
