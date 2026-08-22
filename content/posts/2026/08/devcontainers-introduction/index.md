@@ -89,3 +89,11 @@ chmod +x /home/vscode/.local/bin/new-post
 3. **一般ユーザーでの実行（権限分離）**: `remoteUser: "vscode"` を指定し、ホスト側のファイル権限が root で汚染されるのを防ぎます。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
+
+---
+
+## 参考リンク・情報ソース
+
+- [Development Containers: Open specification for container development (containers.dev)](https://containers.dev)
+- [devcontainer.json reference (containers.dev)](https://containers.dev/implementors/json_reference/)
+- [Dev Container Features (containers.dev)](https://containers.dev/features)

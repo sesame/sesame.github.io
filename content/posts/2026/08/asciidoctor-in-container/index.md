@@ -126,3 +126,11 @@ Hugo が外部コマンドとして `asciidoctor` を呼べるようにセキュ
 - **高速性と安全性の両立**: 排他制御により、並行ビルド時のパイプ切断エラーを確実に防止。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
+
+---
+
+## 参考リンク・情報ソース
+
+- [Asciidoctor: A fast, open source text processor & publishing toolchain (asciidoctor.org)](https://asciidoctor.org)
+- [Hugo External Helpers: Asciidoctor integration (gohugo.io)](https://gohugo.io/content-management/formats/#asciidoctor)
+- [Docker Documentation: Run a container (docs.docker.com)](https://docs.docker.com/engine/reference/commandline/run/)

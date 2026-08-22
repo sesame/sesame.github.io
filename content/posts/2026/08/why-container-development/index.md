@@ -38,3 +38,10 @@ AI コーディングエージェント（Antigravity、Claude Code 等）にシ
 コンテナ内であれば、万が一意図しないファイル変更やパッケージインストールが発生してもホスト環境に波及せず、安全に自律実行ループを回せます。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
+
+---
+
+## 参考リンク・情報ソース
+
+- [Development Containers: Open specification (containers.dev)](https://containers.dev)
+- [Docker Documentation: Get started (docs.docker.com)](https://docs.docker.com/get-started/)

@@ -232,3 +232,13 @@ Hooks の標準化が困難な主な理由は以下の 3 点です：
 - **Hooks との住み分け**: 自然言語による指示（Rules/Skills）と、プログラムによる決定論的制御（Hooks）の役割を理解し、ポータビリティと安全性を両立させる。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
+
+---
+
+## 参考リンク・情報ソース
+
+- [AGENTS.md: The Standard for AI Agent Guidelines (agents.md)](https://agents.md)
+- [Agentic AI Foundation (Linux Foundation)](https://www.linuxfoundation.org)
+- [GitHub Copilot Custom Instructions (GitHub Docs)](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot)
+- [Cursor Rules: MDC format and globs specification (Cursor Docs)](https://docs.cursor.com/context/rules-for-ai)
+- [Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023)](https://arxiv.org/abs/2307.03172)
