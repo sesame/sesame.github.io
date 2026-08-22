@@ -7,6 +7,9 @@ tags: ["hugo", "asciidoc", "asciidoctor", "docker", "devcontainers", "ruby", "tr
 categories: ["Tech", "Architecture"]
 ---
 
+> [!NOTE] 個人用メモ・備忘録
+> 日々の開発・インフラ検証の備忘録として残している個人ノートです。手元環境での動作ログをもとにまとめています。環境差異等もあるため、参考にされる場合はご自身の環境で検証の上ご活用ください。
+
 ## はじめに
 
 静的サイトジェネレーター **Hugo** は、標準で Markdown（Goldmark）の高速パースに対応していますが、技術文書や仕様書に強い **AsciiDoc（`.adoc`）** のレンダリングにも対応しています。

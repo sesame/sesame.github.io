@@ -7,6 +7,9 @@ tags: ["agents-md", "copilot", "cursor", "antigravity", "ai", "standards", "rule
 categories: ["Tech", "AI Development"]
 ---
 
+> [!NOTE] 個人用メモ・備忘録
+> 日々の開発・インフラ検証の備忘録として残している個人ノートです。手元環境での動作ログをもとにまとめています。環境差異等もあるため、参考にされる場合はご自身の環境で検証の上ご活用ください。
+
 ## はじめに
 
 AI コーディングエージェント（Google Antigravity、Cursor、GitHub Copilot、Claude Code 等）を実務で活用する際、プロジェクト固有のアーキテクチャ、ビルド・テスト手順、コーディング規約をいかに正確にエージェントへ伝えるかが重要になります。

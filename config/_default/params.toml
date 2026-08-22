@@ -67,7 +67,7 @@ reading_time = true
     subtitle = "日々の開発・インフラ・ツール検証の技術メモ"
     typeit = false
     social = true
-    disclaimer = ""
+    disclaimer = "※ 日々の開発・インフラ検証の備忘録として残している個人ノートです。手元環境での動作ログをもとにまとめています。"
   [home.posts]
     enable = true
     paginate = 10

@@ -7,6 +7,9 @@ tags: ["docker", "devcontainers", "vscode", "hugo", "antigravity", "ai", "enviro
 categories: ["Tech", "DevOps"]
 ---
 
+> [!NOTE] 個人用メモ・備忘録
+> 日々の開発・インフラ検証の備忘録として残している個人ノートです。手元環境での動作ログをもとにまとめています。環境差異等もあるため、参考にされる場合はご自身の環境で検証の上ご活用ください。
+
 ## はじめに
 
 モダンな Web 開発や静的サイト（Hugo 等）の運用では、Go ランタイム、Node.js / npm、Dart Sass、画像最適化ツール、さらには CI/CD 連携スクリプトなど、多種多様なツールチェーンが要求されます。
