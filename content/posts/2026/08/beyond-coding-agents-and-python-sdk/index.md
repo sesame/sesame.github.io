@@ -183,8 +183,8 @@ if __name__ == "__main__":
 | 方式 | 概要・代表例 | メリット | デメリット・制約 | 最適な利用シーン |
 | :--- | :--- | :--- | :--- | :--- |
 | **① コーディングエージェント流用型**<br>（Zero-code Ops） | **`agy` / Claude Code / Cursor** を運用サーバーや端末で直接起動し、自然言語で指示 | **・開発コスト 0（即座に使える）**<br>**・高いアドホック柔軟性**（`kubectl`, `ssh`, `docker`, `jq` 等の全ツールを AI がその場で組み合わせる） | ・無人の定常自動化には向かない（人間が CLI を叩く必要がある）<br>・権限が広すぎるため破壊的コマンドの安全管理が必要 | **アドホックな障害調査、ワンオフのログ解析、環境構築、緊急トラブルシュート** |
-| **② プロコード自作型**<br>（SDK / Pipeline 組み込み） | **Antigravity Python SDK** や LangGraph 等で、専用の運用スクリプト・サービスを構築 | **・完全無人・イベント駆動（Webhook / Slack）**<br>**・厳格な権限管理 & 監査ログ**（実行可能コマンドをホワイトリスト化） | ・コードの実装・保守コストがかかる<br>・想定外の事態（Ad-hoc）への柔軟性はツールの設計範囲に限定される | **定常監視バッチ、インシデント自動一次トリアージ、CI/CD セキュリティゲート** |
-| **③ 専用エージェント型**<br>（Turnkey Agents） | **OpenClaw / K8sGPT / HolmesGPT** などの特定用途完成品エージェント | **・UI やチャット連携が完成済み**<br>・特定ドメイン（Slack 連携、K8s 診断等）に特化したチューニング | ・製品の枠組みを超える作業ができない<br>・社内独自システムや特殊なログ形式への適応が難しい | **個人・チームの日常雑務代行（Slack 経由）、標準的な K8s クラスタの診断** |
+| **② プロコード自作型**<br>（SDK / Pipeline 組み込み） | **Antigravity Python SDK** や [LangGraph](https://www.langchain.com/langgraph) 等で、専用の運用スクリプト・サービスを構築 | **・完全無人・イベント駆動（Webhook / Slack）**<br>**・厳格な権限管理 & 監査ログ**（実行可能コマンドをホワイトリスト化） | ・コードの実装・保守コストがかかる<br>・想定外の事態（Ad-hoc）への柔軟性はツールの設計範囲に限定される | **定常監視バッチ、インシデント自動一次トリアージ、CI/CD セキュリティゲート** |
+| **③ 専用エージェント型**<br>（Turnkey Agents） | [OpenClaw](https://github.com/openclaw/openclaw) / [K8sGPT](https://k8sgpt.ai/) / [HolmesGPT](https://github.com/robusta-dev/holmesgpt) などの特定用途完成品エージェント | **・UI やチャット連携が完成済み**<br>・特定ドメイン（Slack 連携、K8s 診断等）に特化したチューニング | ・製品の枠組みを超える作業ができない<br>・社内独自システムや特殊なログ形式への適応が難しい | **個人・チームの日常雑務代行（Slack 経由）、標準的な K8s クラスタの診断** |
 
 ### なぜ「コーディングエージェントの流用」が最も柔軟で手間がかからないのか？
 
@@ -232,6 +232,9 @@ Antigravity に Python SDK が用意されている理由は、**エージェン
 - [Google Antigravity Python SDK (GitHub: google-antigravity/antigravity-sdk-python)](https://github.com/google-antigravity/antigravity-sdk-python)
 - [Google Antigravity Documentation (antigravity.google/docs)](https://antigravity.google/docs)
 - [OpenClaw: Open Source Autonomous Personal Agent (GitHub: openclaw/openclaw)](https://github.com/openclaw/openclaw)
+- [K8sGPT: Kubernetes SRE Diagnostics (k8sgpt.ai)](https://k8sgpt.ai/)
+- [HolmesGPT: Autonomous SRE & Incident Investigation (GitHub: robusta-dev/holmesgpt)](https://github.com/robusta-dev/holmesgpt)
+- [OpenAI: Code Interpreter & Assistants API (platform.openai.com)](https://platform.openai.com/docs/assistants/tools/code-interpreter)
 - [Model Context Protocol Specification (modelcontextprotocol.io)](https://modelcontextprotocol.io)
 - [SWE-agent: Agent-Computer Interfaces to Solve Real-World GitHub Issues (Yang et al., 2024)](https://swe-agent.com/)
 - [Anthropic: Computer Use & Tool-Using Agents](https://docs.anthropic.com/en/docs/build-with-claude/computer-use)
