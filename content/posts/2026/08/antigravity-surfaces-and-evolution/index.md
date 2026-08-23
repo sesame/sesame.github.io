@@ -165,7 +165,8 @@ import asyncio
 from google.antigravity import Agent, LocalAgentConfig, CapabilitiesConfig
 
 async def main():
-    # ツール実行権限（ファイル編集・コマンド実行）を有効化してエージェントを初期化
+    # デフォルトは安全のため読み取り専用（Read-only）。
+    # ファイル編集やコマンド実行を許可する場合は CapabilitiesConfig() を指定する。
     config = LocalAgentConfig(
         system_instructions="あなたはコード品質を検証する専門エージェントです。",
         capabilities=CapabilitiesConfig(),
@@ -182,53 +183,69 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-#### 主な用途
-* テスト自動化パイプラインへの組み込み
-* 社内専用のカスタム AI エージェント CLI 開発
-* 大規模コードベースに対するバッチリファクタリング スクリプト
+#### 主な特徴と用途
+* **デフォルト安全設計（Read-only デフォルト）**:
+  - `CapabilitiesConfig()` を明示しない限りツール実行（ファイル書き込みやシェル実行）がブロックされ、安全にコードベースを探索可能。
+* **リアルタイム可観測性（Streaming Thoughts / ToolCalls）**:
+  - トークンだけでなく、エージェントの思考ログ（`response.thoughts`）や呼び出されたツール（`response.tool_calls`）をプログラムからリアルタイムにフック・監視可能。
+* **代表的なユースケース**:
+  - テスト・デプロイ自動化パイプラインへの組み込み
+  - 社内専用のカスタム AI エージェント CLI 開発
+  - 大規模コードベースに対するバッチリファクタリング スクリプト
 
 ---
 
-## 機能差の縮小によって浮き彫りになった「GUI と CLI の真の最適解」
+## 機能差の縮小によって浮き彫りになった「GUI と CLI の真の役割分担」
 
 エージェント技術の進化初期、GUI（コード補完や対話チャット）と CLI（ファイル編集・自律ループ）の間には明確な「機能差」が存在し、住み分けは単純でした。
 
-しかし現在、VS Code 拡張機能などの GUI 側も「自律エージェント機能（ツール実行、ファイル編集、MCP 連携）」をフル装備し、カタログスペック上の機能差は大分縮まりました。
+しかし現在、VS Code 拡張機能や Cursor などの GUI 側も「自律エージェント機能（ツール実行、ファイル編集、MCP 連携）」をフル装備し、カタログスペック上の機能差は大分縮まりました。
 
-「GUI でもエージェントが動くなら、なぜ CLI を使うのか？」── 機能差が埋まったからこそ、**「どちらの環境が、何をするためにアーキテクチャ上最適化されているか（無駄のなさ・コンテキスト純度・並行性）」という本質的な役割分担** が際立つようになりました。
+「GUI でもエージェントが動くなら、なぜ CLI を使うのか？」── 2025〜2026 年にかけて開発者コミュニティで白熱したこの疑問は、**「Suggestion（提案・手元アシスト）」と「Delegation（委譲・自律自走）」という 2 つのパラダイムの違い** によって鮮やかに解き明かされています。
 
-```text
-【GUI の最適解：エディタ密着型のローカル知能（Suggestion / In-the-loop）】
-・無理にコマンドを手探り実行させるのではなく、
-・「開いている画面・カーソル位置・LSP（型情報）」という手元のリッチな文脈を
-  100% 活かして、人間の直感的な編集を極上の精度でアシストする。
-
-【CLI の最適解：コマンド駆動型の高純度自律エンジン（Delegation / Out-of-the-loop）】
-・「コマンド検索（rg, fd, jq, git）」を最大限に駆使して、必要なコンテキストだけを
-  ピンポイントで切り出してノイズ（Attention Dilution）をゼロにする。
-・自律トリガー（CI/CD, Cron, バックグラウンド並列）と組み合わせて完全自動化する。
-```
+> [!NOTE] Suggestion 型（提案）と Delegation 型（委譲）の設計思想の違い
+> [Dev.to や国内外の開発者コミュニティの議論](https://dev.to) でも指摘されている通り、AI コーディング環境は以下の 2 つの設計思想に分化しています。  
+> 1. **Suggestion-based（In-the-loop / 提案型）**: 人間がエディタでコードを書く作業を 1 行ずつ手元で補完・アシストする（GUI エディタが最適）。  
+> 2. **Delegation-based（Out-of-the-loop / 委譲型）**: ゴールを指示してテスト・自己修復まで丸ごと任せて自走させる（ターミナル / CLI が最適）。  
+> 開発環境を「視覚的にコードを検分する工房（Studio）」と捉えるか、「コマンドで自律群を指揮する司令塔（Cockpit）」と捉えるかによって、最適解が異なります。
 
 ---
 
 ## なぜバイブコーディングや自律実行では CLI が最適解なのか？
 
-Andrej Karpathy 氏が提唱した「バイブコーディング（大まかな意図だけを伝え、AI に大規模な実装を一気に任せる開発スタイル）」や無人自走において、CLI が決定打となる理由は以下の 3 点にあります。
+2025 年 2 月、AI 研究者の Andrej Karpathy 氏（元 OpenAI 共同創設者 / 元 Tesla AI ディレクター）は、AI 時代の新しい開発パラダイムとして **「バイブコーディング（Vibe Coding）」** を提唱しました。
 
-### 1. 「コマンド検索」によるコンテキスト純度（S/N 比）の極大化
-* **GUI の課題（暗黙コンテキストによるノイズ）**:
-  GUI の AI は「開いているタブ」などを自動で親切にプロンプトへ詰め込みます。しかし、大規模な改修において無関係なファイルが混ざると、**Attention Dilution（注意の希釈 / Lost in the Middle 現象）** が発生し、指示の見落としやハルシネーションの原因になります。
-* **CLI の優位性（高密度コンテキスト）**:
-  CLI 環境では、AI 自身（または人間）が `rg` や `fd`、`jq` を使って **「該当する関数の前後 10 行だけ」「特定のエラーログだけ」を外科手術のように切り出してプロンプトに注入** します。ノイズがゼロ（純度 100%）に保たれるため、推論精度が劇的に上がります。
+> [!NOTE] Andrej Karpathy 氏による「バイブコーディング」の提唱
+> 「構文（シンタックス）の細部を書く作業から完全に離れ、大まかな意図（バイブス）だけを自然言語で伝え、コードの存在すら忘れて指数関数的な開発速度に身を委ねる新しいコーディング様式」  
+> ── [Andrej Karpathy 氏の X ポスト（2025 年 2 月 2 日）](https://x.com/karpathy/status/1886192184808247467)
 
-### 2. 「作って終わり」にしない自己検証・修復ループの完走力
-バイブコーディングの本質は、大量のコードを一括生成した後の **「テストが通るまでの自走」** です。
-CLI 環境の AI は、コード生成直後に自ら `npm run build` や `pytest` を叩き、型エラーやテスト落ちを検知して自律修正するループを何ターンでも裏で完走させます。人間が画面に戻ってきた時には、すでにテストをパスした完成品が出来上がっています。
+このような「人間がコードを手書きするのではなく、AI に実装を一気に委譲して自律自走させる開発スタイル」において、なぜ GUI エディタではなく **CLI（ターミナル環境）が決定打（最適解）** となるのか？ 開発者コミュニティや AI 研究所の検証から、以下の 4 つのアーキテクチャ的要因が明らかになっています。
 
-### 3. マルチプレキシング（5台以上の並列同時自走）
-Anthropic の Claude Code 開発チームや最前線のエンジニアが実践している最大の生産性ハックが **「マルチプレキシング（並列化）」** です。
-* `git worktree` で作業ツリーを分離し、ターミナル上で **5 台のエージェント（`agy`）を同時に並行自走** させます（Issue 調査、API 実装、テスト追加、ドキュメント更新を同時進行）。
-* VS Code で 5 つのウィンドウを開いてエージェントを動かすと、タブが氾濫して画面が崩壊し、メモリ消費で PC が悲鳴を上げます。**「エージェントの群れ（Swarm）を指揮する」には、軽量で画面を奪わないターミナルが唯一の現実解** です。
+### 1. 直接実行力と低レイテンシ（High Agency & Native Habitat）
+* **GUI の制約（提案・描画のオーバーヘッド）**:
+  GUI エディタ上の AI は、エディタの仮想 DOM 描画や UI 状態管理を挟むため、差分提示やダイアログ確認など「人間への提案（Suggestion）」が中心になりやすく、動作速度や自律性に制約がかかります。
+* **CLI の優位性（OS レイヤーへの直結）**:
+  Anthropic の [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code) や [Aider](https://aider.chat/) の設計思想が示すように、ターミナルはエージェントにとっての「母艦（Native Habitat）」です。OS のシェル、ファイルシステム、Git、パッケージマネージャーに直接アクセスし、UI のオーバーヘッドなしに自律コマンドを高速実行できます。
+
+### 2. 「コマンド検索」によるコンテキスト純度（S/N 比）の極大化
+* **GUI の課題（暗黙コンテキストによる注意の希釈 / Context Pollution）**:
+  GUI エディタの AI は利便性のために「開いているタブ」や周辺ファイルを自動的にプロンプトへ詰め込みます。しかし、大規模なコードベースにおいて無関係なファイルが混入すると、**Attention Dilution（注意の希釈 / [Lost in the Middle 現象](https://arxiv.org/abs/2307.03172)）** が発生し、指示の見落としやハルシネーションの原因になります。
+* **CLI の優位性（外科手術のような高純度コンテキスト）**:
+  CLI 環境のエージェントは、`rg`（ripgrep）、`fd`、`jq`、`git log` などの高速な UNIX ツールを自ら実行し、**「該当する関数の前後 10 行だけ」「直近のエラーログのスタックトレースだけ」を外科手術のようにピンポイントで切り出してプロンプトに注入（Progressive Disclosure）** します。不要なノイズを完全に削ぎ落とし、コンテキストの S/N 比を極大化することで、推論とコード修正の精度が劇的に向上します。
+
+### 3. 「作って終わり」にしない自己検証・修復ループ（Execution-Feedback Loop）
+バイブコーディングの本質は、コードを一括生成した後の **「テストが通るまでの自走・自己修復（Test-Driven Self-Correction）」** にあります。
+* **実行環境直結の強み**:
+  Princeton 大学の [SWE-agent](https://swe-agent.com/) / SWE-bench 等の研究でも実証されている通り、自律エージェントの成功率は「コードを生成した直後にシェル環境で即座にビルド・テストを実行し、その標準出力・エラーメッセージをフィードバックとして受け取れるか」に大きく依存します。
+* **CLI の完走力**:
+  CLI 環境のエージェントは、コード修正直後に自ら `npm test` や `pytest`、`go test` を叩き、型エラーやテスト落ちを検知して自律修正するループを何ターンでも完走させます。人間が画面に戻ってきた時には、すでにテストをパスした検証済みの完成品が出来上がっています。
+
+### 4. マルチプレキシング（5〜10 台以上の並列同時自走）
+Anthropic の Claude Code 開発リードである [Boris Cherny 氏ら](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code) が実践し提唱している最大の生産性ハックが **「マルチプレキシング（Agent Multiplexing / 並列自走）」** です。
+* **`git worktree` による作業の完全隔離**:
+  `git worktree` を使って作業ツリーとブランチを分離し、ターミナル上で **5〜10 台以上のエージェント（`agy` や Claude Code）を同時に並行自走** させます（Issue 調査、API 実装、テスト追加、ドキュメント更新を同時進行）。
+* **オーケストレーターへの進化**:
+  GUI エディタで 5 つ以上のウィンドウを開いてエージェントを動かすと、タブが氾濫して画面が崩壊し、メモリ消費で開発マシンが悲鳴を上げます。**「エージェントの群れ（Swarm）を指揮するオーケストレーター」として動く場合、軽量で画面を奪わず、バックグラウンド実行や通知と親和性の高いターミナル / CLI こそが唯一の現実解** となります。
 
 ---
 
@@ -274,5 +291,9 @@ flowchart LR
 - [Model Context Protocol Specification (modelcontextprotocol.io)](https://modelcontextprotocol.io)
 - [Agent Skills Runbook Specification (agentskills.io)](https://agentskills.io)
 - [Agent Plugins: Open Specification (agent-plugins.org)](https://agent-plugins.org)
-- [Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023)](https://arxiv.org/abs/2307.03172)
+- [Andrej Karpathy: "There's a new kind of coding I call 'vibe coding'..." (X Post, Feb 2025)](https://x.com/karpathy/status/1886192184808247467)
+- [Boris Cherny / Anthropic: Claude Code & Agent Multiplexing Workflow](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code)
+- [Aider: AI Pair Programming in your Terminal (aider.chat)](https://aider.chat/)
+- [SWE-agent: Agent-Computer Interfaces to Solve Real-World GitHub Issues (Yang et al., 2024, Princeton University)](https://swe-agent.com/)
+- [Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023, arXiv:2307.03172)](https://arxiv.org/abs/2307.03172)
 
