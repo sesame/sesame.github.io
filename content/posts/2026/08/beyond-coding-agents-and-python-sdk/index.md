@@ -186,19 +186,14 @@ if __name__ == "__main__":
 | **② プロコード自作型**<br>（SDK / Pipeline 組み込み） | **Antigravity Python SDK** や [LangGraph](https://www.langchain.com/langgraph) 等で、専用の運用スクリプト・サービスを構築 | **・完全無人・イベント駆動（Webhook / Slack）**<br>**・厳格な権限管理 & 監査ログ**（実行可能コマンドをホワイトリスト化） | ・コードの実装・保守コストがかかる<br>・想定外の事態（Ad-hoc）への柔軟性はツールの設計範囲に限定される | **定常監視バッチ、インシデント自動一次トリアージ、CI/CD セキュリティゲート** |
 | **③ 専用エージェント型**<br>（Turnkey Agents） | [OpenClaw](https://github.com/openclaw/openclaw) / [K8sGPT](https://k8sgpt.ai/) / [HolmesGPT](https://github.com/robusta-dev/holmesgpt) などの特定用途完成品エージェント | **・UI やチャット連携が完成済み**<br>・特定ドメイン（Slack 連携、K8s 診断等）に特化したチューニング | ・製品の枠組みを超える作業ができない<br>・社内独自システムや特殊なログ形式への適応が難しい | **個人・チームの日常雑務代行（Slack 経由）、標準的な K8s クラスタの診断** |
 
-### なぜ「コーディングエージェントの流用」が最も柔軟で手間がかからないのか？
+### 各アプローチの背景と実例
+#### 1. コーディングエージェント流用型：なぜ「非公式」な使い方が最も柔軟なのか？
+一見すると「開発用ツールを無理に使っている」ように思えるコーディングエージェント（`agy` や Claude Code）の運用流用ですが、実務上は **柔軟性が高く、立ち上げの手間が不要な即効性のあるアプローチ** です。
 
-一見すると「正式な運用ツールではない」ように思えるコーディングエージェント（`agy` や Claude Code）の運用流用ですが、実務上は **柔軟性が高く、立ち上げの手間が不要な即効性のあるアプローチ** となっています。
-
-> [!TIP] なぜコーディングエージェントは運用の即戦力になるのか？
-> プロコードでエージェントを自作する場合、「この API を叩く関数」「このログを取得するツール」を人間が 1 つずつ Python で定義してあげる必要があります。  
-> 一方、コーディングエージェントは **「すでに完全なシェル実行環境と自己修復ループを持っている」** ため、サーバー上にある `kubectl`、`grep`、`systemctl`、`aws` CLI などを、その場の状況に応じて AI 自身が勝手に組み合わせて目的を達成します。
-
-### 実務での判断基準（Decision Flow）
-
-```mermaid
-flowchart TD
-    Start["運用の自動化・効率化をしたい"] --> Q1{"定常的な無人実行が必要か？<br>（Webhook/Slack連携/定期Cron）"}
+#### 2. プロコード自作型：Antigravity Python SDK や LangGraph による統制
+エンタープライズの運用では、エージェントに広範なシェル権限をそのまま渡すことはセキュリティ上許容されません。  
+そのため、LangChain 社が提供する [LangGraph](https://www.langchain.com/langgraph) や、Google の [Antigravity Python SDK](https://github.com/google-antigravity/antigravity-sdk-python) を用いて、「許可されたクエリのみを実行し、結果を整形して Slack に投稿する」といった **権限境界（Guardrails）をプロコードで厳格に定義したパイプライン** が構築されます。
+#### 3. 専用エージェント型：OpenClaw や CNCF プロジェクトの台頭
     
     Q1 -- "No（人間がその場で調査・対応）" --> UseCase1["【① コーディングエージェント流用型】<br>agy / Claude Code を直接起動して丸投げ<br>➔ 最速・最も柔軟・工数ゼロ"]
     

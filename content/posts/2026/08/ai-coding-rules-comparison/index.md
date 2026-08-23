@@ -130,7 +130,7 @@ globs: src/components/**/*.{ts,tsx}, src/app/**/*.{ts,tsx}
 
 ## AGENTS.md を設計するときの原則
 
-`AGENTS.md` は毎回のプロンプト（システムコンテキスト）に読み込まれるため、肥大化させると **Context Bloat（トークン消費の増大）** や **Attention Dilution（指示の見落とし）** の原因になります。
+`AGENTS.md` は毎回のプロンプト（システムコンテキスト）に読み込まれるため、肥大化させると **Context Bloat（トークン消費の増大）** や、スタンフォード大等の研究 **[『Lost in the Middle』(Liu et al., 2023)](https://arxiv.org/abs/2307.03172)** で示された **Attention Dilution（中盤に置かれた重要指示の希釈・見落とし）** の原因になります。
 
 > [!TIP]
 > **常時ロード（AGENTS.md）とオンデマンド（Skills / ドキュメント）の分離**
