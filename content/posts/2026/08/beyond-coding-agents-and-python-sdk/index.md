@@ -176,17 +176,52 @@ if __name__ == "__main__":
 
 ---
 
+## 運用で AI エージェントを活用する 3 つのアプローチと使い分け
+
+実務の運用現場で AI エージェントを活用するアプローチは、大きく以下の **3 つの方式（パターン）** に整理できます。
+
+| 方式 | 概要・代表例 | メリット | デメリット・制約 | 最適な利用シーン |
+| :--- | :--- | :--- | :--- | :--- |
+| **① コーディングエージェント流用型**<br>（Zero-code Ops） | **`agy` / Claude Code / Cursor** を運用サーバーや端末で直接起動し、自然言語で指示 | **・開発コスト 0（即座に使える）**<br>**・高いアドホック柔軟性**（`kubectl`, `ssh`, `docker`, `jq` 等の全ツールを AI がその場で組み合わせる） | ・無人の定常自動化には向かない（人間が CLI を叩く必要がある）<br>・権限が広すぎるため破壊的コマンドの安全管理が必要 | **アドホックな障害調査、ワンオフのログ解析、環境構築、緊急トラブルシュート** |
+| **② プロコード自作型**<br>（SDK / Pipeline 組み込み） | **Antigravity Python SDK** や LangGraph 等で、専用の運用スクリプト・サービスを構築 | **・完全無人・イベント駆動（Webhook / Slack）**<br>**・厳格な権限管理 & 監査ログ**（実行可能コマンドをホワイトリスト化） | ・コードの実装・保守コストがかかる<br>・想定外の事態（Ad-hoc）への柔軟性はツールの設計範囲に限定される | **定常監視バッチ、インシデント自動一次トリアージ、CI/CD セキュリティゲート** |
+| **③ 専用エージェント型**<br>（Turnkey Agents） | **OpenClaw / K8sGPT / HolmesGPT** などの特定用途完成品エージェント | **・UI やチャット連携が完成済み**<br>・特定ドメイン（Slack 連携、K8s 診断等）に特化したチューニング | ・製品の枠組みを超える作業ができない<br>・社内独自システムや特殊なログ形式への適応が難しい | **個人・チームの日常雑務代行（Slack 経由）、標準的な K8s クラスタの診断** |
+
+### なぜ「コーディングエージェントの流用」が最も柔軟で手間がかからないのか？
+
+一見すると「正式な運用ツールではない」ように思えるコーディングエージェント（`agy` や Claude Code）の運用流用ですが、実務上は **柔軟性が高く、立ち上げの手間が不要な即効性のあるアプローチ** となっています。
+
+> [!TIP] なぜコーディングエージェントは運用の即戦力になるのか？
+> プロコードでエージェントを自作する場合、「この API を叩く関数」「このログを取得するツール」を人間が 1 つずつ Python で定義してあげる必要があります。  
+> 一方、コーディングエージェントは **「すでに完全なシェル実行環境と自己修復ループを持っている」** ため、サーバー上にある `kubectl`、`grep`、`systemctl`、`aws` CLI などを、その場の状況に応じて AI 自身が勝手に組み合わせて目的を達成します。
+
+### 実務での判断基準（Decision Flow）
+
+```mermaid
+flowchart TD
+    Start["運用の自動化・効率化をしたい"] --> Q1{"定常的な無人実行が必要か？<br>（Webhook/Slack連携/定期Cron）"}
+    
+    Q1 -- "No（人間がその場で調査・対応）" --> UseCase1["【① コーディングエージェント流用型】<br>agy / Claude Code を直接起動して丸投げ<br>➔ 最速・最も柔軟・工数ゼロ"]
+    
+    Q1 -- "Yes（無人自走させたい）" --> Q2{"標準的な特定用途か？<br>（Slack執事、K8s診断など）"}
+    
+    Q2 -- "Yes（既存パッケージで足りる）" --> UseCase3["【③ 専用エージェント型】<br>OpenClaw や K8sGPT を導入<br>➔ 設定だけで即稼働"]
+    
+    Q2 -- "No（社内システム連携や厳格な安全基準）" --> UseCase2["【② プロコード自作型】<br>Antigravity Python SDK でパイプライン構築<br>➔ 堅牢・セキュア・完全自動"]
+```
+
+---
+
 ## まとめ
 
 「AI コーディングエージェント」という名称は、この技術の進化の出発点を表しているに過ぎません。
 
 - **エディタの中（GUI / VS Code 拡張機能）**: 人間の直感を研ぎ澄ます「ペアプログラマ」
-- **ターミナルの中（CLI / `agy`）**: タスクを丸投げして並行自走させる「自律エンジニア」
-- **プログラムの中（Python SDK）**: 業務パイプラインを裏で駆動する「汎用自律オペレータ」
+- **ターミナルの中（CLI / `agy`）**: タスクを丸投げして並行自走させる「自律エンジニア / 運用オペレータ」
+- **プログラムの中（Python SDK）**: 業務パイプラインを裏で駆動する「汎用自律オペレータ基盤」
 
 Antigravity に Python SDK が用意されている理由は、**エージェントの推論・実行ループをあらゆる業務自動化の「部品」として解放するため** です。
 
-開発用途という枠組みを外し、自社のインフラ運用、データパイプライン、セキュリティ監査にエージェントの自律ループを組み込むことで、これまでの静的スクリプトでは不可能だった「臨機応変に試行錯誤・自己修復する次世代の自動化」が実現します。
+開発用途という枠組みを外し、手元のトラブルシュートには CLI を、定常的な無人運用には Python SDK や専用エージェントを使い分けることで、次世代の自律運用体制を構築できます。
 
 > ※ 本記事の構成検討・技術仕様の検証・Hugo による静的ビルド検証・推敲は、AI コーディングエージェントとの自律協働ループによって執筆・検証されています。
 
@@ -196,6 +231,8 @@ Antigravity に Python SDK が用意されている理由は、**エージェン
 
 - [Google Antigravity Python SDK (GitHub: google-antigravity/antigravity-sdk-python)](https://github.com/google-antigravity/antigravity-sdk-python)
 - [Google Antigravity Documentation (antigravity.google/docs)](https://antigravity.google/docs)
+- [OpenClaw: Open Source Autonomous Personal Agent (GitHub: openclaw/openclaw)](https://github.com/openclaw/openclaw)
 - [Model Context Protocol Specification (modelcontextprotocol.io)](https://modelcontextprotocol.io)
 - [SWE-agent: Agent-Computer Interfaces to Solve Real-World GitHub Issues (Yang et al., 2024)](https://swe-agent.com/)
 - [Anthropic: Computer Use & Tool-Using Agents](https://docs.anthropic.com/en/docs/build-with-claude/computer-use)
+
