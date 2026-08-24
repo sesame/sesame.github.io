@@ -118,55 +118,6 @@ flowchart TD
 * **Problems 連携**:
   - コンパイラエラーや Linter の警告から「Fix with Agent」を 1 クリックして自動修正。
 
-#### 補足：DevContainer 環境における拡張機能の動作構造
-DevContainer（コンテナ開発環境）を利用している場合、拡張機能が「ホスト側」と「コンテナ側」のどちらに導入・実行されるのかという疑問が生じます。
-
-VS Code は **「UI 描画（ホスト側）」** と **「実行エンジン（コンテナ側の VS Code Server）」** が完全に分離されたアーキテクチャを採用しています。Antigravity 拡張機能や GitHub Copilot は **Workspace Extensions** に分類され、**DevContainer 内部（`/home/vscode/.vscode-server/extensions/`）に自動注入されてコンテナ内のプロセスとして動作** します。
-
-```mermaid
-flowchart TD
-    subgraph Host ["ホスト OS（手元の Mac / Windows / Linux）"]
-        VSCodeUI["VS Code クライアント (UI)<br>・キー入力・チャット画面の描画・Diff 表示"]
-    end
-
-    subgraph Container ["DevContainer（Docker コンテナ内部）"]
-        VSCodeServer["VS Code Server (/home/vscode/.vscode-server/)"]
-        
-        subgraph ExtArea ["コンテナ内で稼働する拡張機能 (Workspace Extensions)"]
-            AntigravityExt["★ Antigravity 拡張機能<br>（推論ループ・ファイル編集・コマンド実行）"]
-            CopilotExt["★ GitHub Copilot<br>（インライン補完・言語解析）"]
-        end
-        
-        subgraph EnvArea ["コンテナ内の隔離開発環境（物理サンドボックス）"]
-            CLI["Antigravity CLI (agy)"]
-            Tools["Hugo / Go / Node.js / Python 等"]
-            Workspace["作業ディレクトリ (/workspaces/...)"]
-        end
-
-        VSCodeServer --- ExtArea
-        ExtArea --- EnvArea
-    end
-
-    VSCodeUI <-->|"IPC / ポート通信"| VSCodeServer
-```
-
-- **CLI (`agy`) との構造的な違い**:
-  - `agy` CLI が「コンテナ内のターミナルで直接叩く」のに対し、Antigravity 拡張機能は「コンテナ内の `VS Code Server` 上で動作しつつ、ホスト側の VS Code UI と通信」します。
-- **物理サンドボックスによる安全性**:
-  - CLI であれ拡張機能であれ、エージェントが操作するファイルや実行するシェルコマンドはすべて **コンテナ内部に隔離** されているため、ホスト OS の破壊や誤操作の心配なく安全に自走させることができます。
-
-#### GitHub Copilot 拡張機能との設計思想の違い
-VS Code で標準的に利用される **[GitHub Copilot](https://docs.github.com/en/copilot)** と **Antigravity 拡張機能** は、同じエディタ内 AI であっても設計思想が明確に異なります。
-
-| 比較項目 | GitHub Copilot 拡張機能 | Antigravity 拡張機能 |
-| :--- | :--- | :--- |
-| **設計思想** | **「副操縦士（Co-pilot / In-the-loop）」**<br>人間のタイピングや思考の流れを妨げず支援 | **「自律エージェント（Autonomous Partner）」**<br>計画立案から実装・検証までを自走完遂 |
-| **得意な役割** | ・リアルタイムのコード補完（Tab 補完）<br>・選択範囲のインライン生成（`Ctrl+I`）<br>・GitHub（PR / Issue / Review）連携 | ・複数ファイルにまたがる設計・リファクタ<br>・テスト実行とエラーの自律自己修復ループ<br>・MCP / Skills / Subagents の連携 |
-| **計画管理** | 会話ログベース（チャット履歴） | **アーティファクト管理**（`implementation_plan.md` や `walkthrough.md`） |
-| **指示ファイル** | `.github/copilot-instructions.md` | `AGENTS.md`、`.agents/plugins/`、`SKILL.md` |
-
-手元の細かなタイピングには Copilot を使い、機能全体の実装や自律調査には Antigravity を使うといった **「In-the-loop と Out-of-the-loop の併用」** が実務における効果的なアプローチです。
-
 ---
 
 ### 2. Antigravity 2.0（デスクトップ司令塔）
@@ -344,6 +295,5 @@ flowchart LR
 - [Boris Cherny / Anthropic: Claude Code & Agent Multiplexing Workflow](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code)
 - [Aider: AI Pair Programming in your Terminal (aider.chat)](https://aider.chat/)
 - [SWE-agent: Agent-Computer Interfaces to Solve Real-World GitHub Issues (Yang et al., 2024, Princeton University)](https://swe-agent.com/)
-- [GitHub Copilot Documentation (docs.github.com/en/copilot)](https://docs.github.com/en/copilot)
 - [Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023, arXiv:2307.03172)](https://arxiv.org/abs/2307.03172)
 

@@ -88,8 +88,7 @@ reading_time = true
 
 [codeblock]
   wrapper = true
-  mode = "mac"
-  max_shown_lines = 30
+  mode = "classic"
   shadow = "hover"
   copyable = true
   downloadable = false
