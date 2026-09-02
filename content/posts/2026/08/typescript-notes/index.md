@@ -45,7 +45,7 @@ repost:
 
 ### `npm`
 
-`npm` (Node Package Manager)は、`Node.js` に標準で付属している公式のパッケージマネージャー(パッケージ管理ツール)です。`Python` の `pip` や `Ruby` の `gem` に相当します。
+`npm` (Node Package Manager)は、`Node.js` に標準で付属している公式のパッケージマネージャー(パッケージ管理ツール)です。`Python` の `pip` や `Ruby` の `gem` に相当します。 `JavaScript` のライブラリを管理するツールであり、ライブラリとは他の開発者が作成した便利な機能をまとめたものです。
 
 世界中の開発者が作成・公開したライブラリをコマンド 1 つ(`npm install`)で導入したり、プロジェクトで使うツールのバージョン管理を行ったりする役割を持っています。
 
@@ -1252,10 +1252,38 @@ async function get3(): Promise<number> {
 
 `await` は「与えられた `Promise` の結果が出るまで待つ」というものです。
 
+## React
 
+### Vite
 
+通常の JavaScript 開発では、HTML ファイルを作成して `<script>` タグで JavaScript ファイルを読み込むだけで済みました。
+React アプリケーションの開発には、React ライブラリ本体や開発サーバー、プロジェクトの設定ファイルなどさまざまな準備が必要です。
+
+Vite(ヴィート)は、React プロジェクトの作成に必要な準備をすべて自動的に行ってくれるツールです。
+
+Vite は開発サーバーの起動が高速で、コードを変更するとすぐにブラウザに反映される
+ホットリロードという機能も備えています。
+
+```console
+$ npm create vite@latest my-react-app -- --template react --no-rolldown
+Install with npm and start now?
+No // Noを選択する
+$ cd my-react-app
+$ npm install
+```
+
+### 開発サーバの起動
+
+```console
+$ npm run dev
+```
+
+### JSX
+
+JavaScript の中で HTML のような記法を使って UI を作成できる技術です。
 
 ### 参考
 
 - プロを目指すためのTYPESCRIPT入門 安全なコードの書き方から高度な型の使い方
 - 現場で使えるTypeScript詳解実践ガイド
+- 挫折しない React の教科書 作りながら学ぶ Web 開発
